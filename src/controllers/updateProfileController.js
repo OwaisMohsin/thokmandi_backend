@@ -21,20 +21,47 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 exports.addAddress = asyncHandler(async (req, res) => {
   validateAddressData(req.body);
   const userId = req.user.id;
-  const address = await userService.addUserAddress(userId,req.body);
-  return res
-    .status(201)
-    .json({
-      status: true,
-      message: "Address created succesffuly!",
-      data: { address },
-    }); 
+  const address = await userService.addUserAddress(userId, req.body);
+  return res.status(201).json({
+    status: true,
+    message: "Address created succesffuly!",
+    data: { address },
+  });
 });
 
-
-exports.editAddress = asyncHandler(async (req,res) => {
-  validateAddressData(req.body);
+exports.getAddress = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-  const updatedAddress = await userService.editUserAddress(userId,req.body);
+  const addresses = await userService.getUserAddresses(userId);
+  if (addresses && addresses.length > 0) {
+    return res.status(200).json({
+      status: true,
+      message: "User addresses found",
+      data: { addresses },
+    });
+  }
+  return res.status(200).json({
+    status: true,
+    message: "No User addresses found",
+    data: { addresses: [] },
+  });
+});
 
-})
+exports.editAddress = asyncHandler(async (req, res) => {
+  // validateAddressData(req.body);
+  const userId = req.user.id;
+  const addressId = req.params.id;
+  const updatedAddress = await userService.editUserAddress(
+    userId,
+    addressId,
+    req.body
+  );
+  console.log("update addresss is", updatedAddress);
+
+  return res
+    .status(200)
+    .json({
+      status: true,
+      message: "Address updated successfully",
+      data: { updatedAddress },
+    });
+});

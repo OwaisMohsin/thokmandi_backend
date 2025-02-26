@@ -11,10 +11,10 @@ const errorHandler = (err, req, res, next) => {
   // console.error(`❌ Error: ${message} (Status: ${statusCode})`);
 
   res.status(statusCode).json({
-    status: err.status || "error",
+    status: err.status !== undefined ? err.status : false,
     message: message,
     errors: err.errors || undefined, // Include validation errors if present
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined, // Show stack trace only in dev
+    stack: process.env.NODE_ENV === "dev" ? err.stack : undefined, // Show stack trace only in dev
   });
 };
 

@@ -1,4 +1,5 @@
 const { z } = require("zod");
+const AppError = require('../../utils/AppError');
 
 const subAdminSchema = z.object({
   firstName: z
@@ -23,8 +24,9 @@ const subAdminSchema = z.object({
     .min(6, "Password must be at least 6 characters"),
 
   phoneNumber: z
-    .string({ required_error: "Phone number is required" })
-    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (must be in E.164 format)"),
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (must be in E.164 format)")
+    .optional()
 });
 
 

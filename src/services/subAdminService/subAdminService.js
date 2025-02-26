@@ -1,9 +1,17 @@
 const subAdminRepository = require("../../repositories/subAdminRepository/subAdminRepository");
 const AppError = require("../../utils/AppError");
+const bcrypt = require("bcryptjs");
 
 exports.createSubAdmin = async (data) => {
   try {
-    return await subAdminRepository.createSubAdmin(data);
+    const subAdmin = await subAdminRepository.getSubAdminByEmail(data.email);
+    if(subAdmin){
+      throw new AppError("Email already in use",409);
+    }
+    const { password } = data;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedData = { ...data, isVerified: true, password: hashedPassword };
+    return await subAdminRepository.createSubAdmin(updatedData);
   } catch (error) {
     throw error;
   }
@@ -12,11 +20,7 @@ exports.createSubAdmin = async (data) => {
 exports.getAllSubAdmins = async (req, res) => {
   try {
     const subAdmins = await subAdminRepository.getAllSubAdmins();
-    if (subAdmins && subAdmins.length > 0) {
-      return subAdmins;
-    } else {
-      throw new AppError("No sub admins found", 404);
-    }
+    return subAdmins;
   } catch (error) {
     throw error;
   }

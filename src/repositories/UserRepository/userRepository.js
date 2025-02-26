@@ -2,7 +2,14 @@ const prisma = require("../../config/db");
 
 exports.findUserById = async (id) => {
   return await prisma.user.findUnique({
-    where: { id },
+    where: { id: Number(id) },
+    include: {
+      store: {
+        include: {
+          address: true,
+        },
+      },
+    },
   });
 };
 
@@ -31,7 +38,7 @@ exports.createUser = async (data) => {
 exports.updateUserById = async (id, data) => {
   return await prisma.user.update({
     where: {
-      id,
+      id: Number(id),
     },
     data,
   });
@@ -43,10 +50,26 @@ exports.addUserAddress = async (data) => {
   });
 };
 
-exports.editUserAddress = async (userId, data) => {
+exports.getAddressById = async (id) => {
+  return await prisma.address.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+};
+
+exports.getUserAddresses = async (id) => {
+  return await prisma.address.findMany({
+    where: {
+      userId: Number(id),
+    },
+  });
+};
+
+exports.updateAddress = async (userId, addressId, data) => {
   return await prisma.address.update({
     where: {
-      userId,
+      id: Number(addressId),
     },
     data,
   });

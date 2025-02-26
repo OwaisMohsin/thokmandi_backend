@@ -34,7 +34,7 @@ exports.updateUserProfile = async (id, data) => {
   }
 };
 
-exports.addUserAddress = async (userId,data) => {
+exports.addUserAddress = async (userId, data) => {
   try {
     const updatedData = { ...data, user: { connect: { id: userId } } };
 
@@ -44,10 +44,26 @@ exports.addUserAddress = async (userId,data) => {
   }
 };
 
-exports.editUserAddress = async (req,res) => {
+exports.getUserAddresses = async (id) => {
   try {
-    return await userRepository.editUserAddress(userId,data);
+    return await userRepository.getUserAddresses(id);
   } catch (error) {
-    
+    throw error;
   }
-}
+};
+
+exports.editUserAddress = async (userId,addressId,data) => {
+  try {
+    console.log("serivcw is called.....");
+    
+    const address = await userRepository.getAddressById(addressId);
+    if(!address){
+      throw new AppError("No address found with provided id",404);
+    }
+    console.log("address is ", data);
+    
+    return await userRepository.updateAddress(userId,addressId, data);
+  } catch (error) {
+    throw error;
+  }
+};

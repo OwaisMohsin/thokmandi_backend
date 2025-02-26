@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../middlewares/requestFilter');
-const { addAddress,editAddress } = require('../controllers/updateProfileController');
+const { addAddress,editAddress,getAddress } = require('../controllers/updateProfileController');
 
 
 
@@ -15,7 +15,12 @@ router
     .post(checkRequest,addAddress);
 
 router
-    .route('/user/address/edit-address')
+    .route('/user/address')
+    .get(checkRequest,getAddress)
+
+
+router
+    .route('/user/address/edit-address/:id')
     .put(checkRequest,editAddress);    
 
 

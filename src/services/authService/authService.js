@@ -8,7 +8,7 @@ const crypto = require("crypto");
 
 exports.registerUser = async (data, req) => {
   try {
-    const {name, email, password } = data;
+    const {firstName, lastName, email, password } = data;
     const userFound = await userRepositoy.findUserByEmail(email);
     if (userFound) {
       throw new AppError("Email already in use", 409);
@@ -16,7 +16,8 @@ exports.registerUser = async (data, req) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const userData = {
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
     };
