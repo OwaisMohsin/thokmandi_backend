@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  VENDOR
+  SUB_ADMIN
+  ADMIN
+}
+
+enum DivisionType {
+  CANTON
+  PROVINCE
+  REGION
+  COUNTY
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  name              String?
+  firstName         String?
+  lastName          String?
+  email             String    @unique
+  password          String
+  phoneNumber       String?   @unique
+  role              Role      @default(BUYER)
+  verificationToken String?
+  isVerified        Boolean   @default(false)
+  isActivate        Boolean @default(true)
+  userName          String?
+  Address           Address[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id          Int      @id @default(autoincrement())
+  shopName    String
+  country     String
+  apartment   String?
+  street      String?
+  state       String?
+  city        String?
+  zipCode     String
+  province    String?
+  phoneNumber String
+  addressType String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Country {
+  id              Int           @id @default(autoincrement())
+  name            String
+  has_subdivision Boolean       @default(false)
+  SubDivision     SubDivision[]
+  createdAt       DateTime      @default(now())
+}
+
+model SubDivision {
+  id        Int          @id @default(autoincrement())
+  name      String
+  type      DivisionType
+  countryId Int
+  country   Country      @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+}
