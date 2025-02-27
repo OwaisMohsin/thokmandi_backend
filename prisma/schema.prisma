@@ -38,7 +38,7 @@ model User {
   role              Role      @default(BUYER)
   verificationToken String?
   isVerified        Boolean   @default(false)
-  isActivate        Boolean   @default(true)
+  isActive        Boolean   @default(true)
   userName          String?
   address           Address[]
   store             Store?
@@ -75,8 +75,34 @@ model Store {
   storeStatus      String   @default("pending")
   userId           Int      @unique
   address          Address?
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+}
+
+model Category {
+  id            Int        @id @default(autoincrement())
+  name          String
+  categoryType  String
+  isActive      Boolean @default(true)
+  parentId      Int?
+  parent        Category?  @relation("CategoryToSubcategories", fields: [parentId], references: [id])
+  subcategories Category[] @relation("CategoryToSubcategories")
+  products      Product[]
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Country {
