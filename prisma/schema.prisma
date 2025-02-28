@@ -38,9 +38,10 @@ model User {
   role              Role      @default(BUYER)
   verificationToken String?
   isVerified        Boolean   @default(false)
-  isActive        Boolean   @default(true)
+  isActive          Boolean   @default(true)
   userName          String?
   address           Address[]
+  cart              Cart?
   store             Store?
 
   createdAt DateTime @default(now())
@@ -83,26 +84,48 @@ model Category {
   id            Int        @id @default(autoincrement())
   name          String
   categoryType  String
-  isActive      Boolean @default(true)
+  isActive      Boolean    @default(true)
   parentId      Int?
-  parent        Category?  @relation("CategoryToSubcategories", fields: [parentId], references: [id])
+  parent        Category?  @relation("CategoryToSubcategories", fields: [parentId], references: [id], onDelete: Cascade)
   subcategories Category[] @relation("CategoryToSubcategories")
   products      Product[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  price       Float
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id])
+  id               Int        @id @default(autoincrement())
+  title            String
+  description      String?
+  price            Decimal    @default(0.0) @db.Decimal(10, 2)
+  image            String
+  shortDescription String
+  longDescription  String
+  categoryId       Int
+  category         Category   @relation(fields: [categoryId], references: [id])
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  CartItem         CartItem[]
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  total     Decimal ?   @db.Decimal(10, 2)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int     @default(1)
+  price     Decimal @db.Decimal(10, 2)
 }
 
 model Country {

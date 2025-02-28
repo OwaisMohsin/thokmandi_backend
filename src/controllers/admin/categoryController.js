@@ -1,5 +1,6 @@
 const asyncHandler = require("../../utils/asyncHandler");
 const categoryService = require("../../services/categoryService/categoryService");
+const { category } = require("../../config/db");
 
 exports.getAllCategories = asyncHandler(async (req, res) => {
   const categories = await categoryService.getCategories();
@@ -24,4 +25,28 @@ exports.createProductCategory = asyncHandler(async (req, res) => {
   });
 });
 
+exports.updateCategory = asyncHandler(async (req, res) => {
+  const categoryId = req.params.categoryId;
+  const data = req.body;
+  
+  const updatedCategory = await categoryService.updateSingleCategory(
+    categoryId,
+    data
+  );
+  return res
+    .status(201)
+    .json({
+      status: true,
+      message: "Category updated successfully",
+      data: { category: updatedCategory },
+    });
+});
 
+exports.deleteCategory = asyncHandler(async (req, res) => {
+  const categoryId = req.params.categoryId;
+  await categoryService.deleteSingleCategory(id);
+  return res.stats(200).json({
+    state: true,
+    message: "Category deleted succesfully!",
+  });
+});
