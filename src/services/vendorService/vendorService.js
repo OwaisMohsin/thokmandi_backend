@@ -11,7 +11,7 @@ exports.registerVendor = async (data) => {
     phoneNumber,
     password,
     shopName,
-    shopUrl,
+    storeUrl,
     street,
     apartment,
     city,
@@ -33,15 +33,17 @@ exports.registerVendor = async (data) => {
   };
 
   try {
-    let user = await userRepository.findUserByEmail(email); // 🔍 Check if user exists
+    let user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      user = await authService.registerUser(userData); // ✅ Assign newly registered user to outer variable
+      user = await authService.registerUser(userData);
     }
 
     const storeData = {
       storeName: shopName,
-      user: { connect: { id: user.id } }, // ✅ Guaranteed to have `user.id`
+      storeUrl,
+      storePhoneNumber,
+      user: { connect: { id: user.id } },
     };
 
     const store = await vendorRepository.createStore(storeData);
@@ -58,6 +60,14 @@ exports.registerVendor = async (data) => {
 
     const result = await userRepository.findUserById(user.id);
     return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.vendorRequests = async () => {
+  try {
+    return await vendorRepository.getAllVendorRequests();
   } catch (error) {
     throw error;
   }

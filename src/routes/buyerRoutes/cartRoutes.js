@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {addProductToCart,getUserCart,deleteCartItem} = require('../../controllers/buyer/cartController');
+const {addProductToCart,getUserCart,deleteCartItem,updateCartItemQuantity,deleteAllItems} = require('../../controllers/buyer/cartController');
 
 
 
@@ -17,8 +17,16 @@ router
     .post(checkRequest,addProductToCart);
 
 router
+    .route('/user/cart/item/update/:itemId')
+    .put(checkRequest,updateCartItemQuantity);    
+
+router
     .route('/user/cart/item/delete/:itemId')
-    .delete(checkRequest,deleteCartItem)    
+    .delete(checkRequest,deleteCartItem)   
+    
+router
+    .route('/user/cart/delete')
+    .delete(checkRequest,deleteAllItems)     
 
 
      

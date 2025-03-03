@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {getAllCategories,createProductCategory,updateCategory} = require('../../controllers/admin/categoryController')
+const {getAllCategories,createProductCategory,updateCategory,deleteCategory} = require('../../controllers/admin/categoryController')
 
 
 
@@ -25,6 +25,10 @@ router
 router
     .route('/category/update/:categoryId')
     .put(checkRequest,updateCategory)
+
+router
+    .route('/category/delete/:categoryId')
+    .delete(checkRequest,deleteCategory);    
 
      
 

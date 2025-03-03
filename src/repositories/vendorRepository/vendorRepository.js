@@ -22,3 +22,15 @@ exports.addAddress = async (data) => {
     data,
   });
 };
+
+exports.getAllVendorRequests = async () => {
+  return await prisma.store.findMany({
+    where:{
+      storeStatus:"pending"
+    },
+    include:{
+      address:true,
+      user:true
+    }
+  })
+}

@@ -71,7 +71,7 @@ model Address {
 model Store {
   id               Int      @id @default(autoincrement())
   storeName        String
-  shopUrl          String?
+  storeUrl         String?
   storePhoneNumber String?
   storeStatus      String   @default("pending")
   userId           Int      @unique
@@ -113,7 +113,7 @@ model Cart {
   userId    Int        @unique
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
-  total     Decimal ?   @db.Decimal(10, 2)
+  total     Decimal?   @db.Decimal(10, 2)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

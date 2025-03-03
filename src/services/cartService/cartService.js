@@ -2,7 +2,6 @@ const cartRepository = require("../../repositories/cartRepository/cartRepository
 
 exports.fetchUserCart = async (userId) => {
   try {
-    
     return await cartRepository.getUserCart(userId);
   } catch (error) {
     throw error;
@@ -16,7 +15,19 @@ exports.addItemToCart = async (userId, item) => {
       cart = await cartRepository.createCart(userId);
     }
 
-    const updatedData = {
+    let updatedData = {};
+    const productAlreadyPresent =
+      await cartRepository.getCartItemByUserAndProduct(cart.id, item.productId);
+    console.log("Products is", productAlreadyPresent);
+
+    if (productAlreadyPresent) {
+      return await cartRepository.updateCartItem(
+        productAlreadyPresent.id,
+        item.quantity
+      );
+    }
+
+    updatedData = {
       price: parseFloat(item.price).toFixed(2), // Ensures two decimal places
       quantity: Number(item.quantity), // Ensures quantity is a valid number
       cart: { connect: { id: cart.id } },
@@ -30,10 +41,28 @@ exports.addItemToCart = async (userId, item) => {
   }
 };
 
+exports.updateItemQuantity = async (productId, newQuantity) => {
+  try {
+    return await cartRepository.updateItemQuantityById(productId, newQuantity);
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.deleteItem = async (id) => {
-    try {
-        return await cartRepository.deleteCartItem(id);
-    } catch (error) {
-        throw error;
-    }
+  try {
+    return await cartRepository.deleteCartItem(id);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.removeAllItems = async (userId) => {
+
+try {
+  const cart = await cartRepository.getCartByUserId(userId);
+  return await cartRepository.deleteAllCartItems(cart.id);
+} catch (error) {
+  throw error;
+}  
 }
