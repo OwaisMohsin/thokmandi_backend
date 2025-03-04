@@ -18,7 +18,6 @@ exports.addItemToCart = async (userId, item) => {
     let updatedData = {};
     const productAlreadyPresent =
       await cartRepository.getCartItemByUserAndProduct(cart.id, item.productId);
-    console.log("Products is", productAlreadyPresent);
 
     if (productAlreadyPresent) {
       return await cartRepository.updateCartItem(
@@ -28,8 +27,8 @@ exports.addItemToCart = async (userId, item) => {
     }
 
     updatedData = {
-      price: parseFloat(item.price).toFixed(2), // Ensures two decimal places
-      quantity: Number(item.quantity), // Ensures quantity is a valid number
+      price: parseFloat(item.price).toFixed(2),
+      quantity: Number(item.quantity),
       cart: { connect: { id: cart.id } },
       product: { connect: { id: item.productId } },
     };
@@ -58,11 +57,10 @@ exports.deleteItem = async (id) => {
 };
 
 exports.removeAllItems = async (userId) => {
-
-try {
-  const cart = await cartRepository.getCartByUserId(userId);
-  return await cartRepository.deleteAllCartItems(cart.id);
-} catch (error) {
-  throw error;
-}  
-}
+  try {
+    const cart = await cartRepository.getCartByUserId(userId);
+    return await cartRepository.deleteAllCartItems(cart.id);
+  } catch (error) {
+    throw error;
+  }
+};

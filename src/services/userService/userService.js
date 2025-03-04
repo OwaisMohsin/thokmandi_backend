@@ -4,6 +4,14 @@ const AppError = require("../../utils/AppError");
 const asyncHandler = require("../../utils/asyncHandler");
 const prisma = require("../../config/db");
 
+exports.getUserProfile = async (userId) => {
+  try {
+    return await userRepository.findUserById(userId);
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.updateUserProfile = async (id, data) => {
   try {
     const user = await userRepository.findUserById(id);
@@ -37,6 +45,9 @@ exports.updateUserProfile = async (id, data) => {
 exports.addUserAddress = async (userId, data) => {
   try {
     const updatedData = { ...data, user: { connect: { id: userId } } };
+    if (data.addressType === "shipping") {
+      await userRepository.updateUserById(userId, { hasShippingAddress: true });
+    }
 
     return await userRepository.addUserAddress(updatedData);
   } catch (error) {
@@ -52,17 +63,17 @@ exports.getUserAddresses = async (id) => {
   }
 };
 
-exports.editUserAddress = async (userId,addressId,data) => {
+exports.editUserAddress = async (userId, addressId, data) => {
   try {
     console.log("serivcw is called.....");
-    
+
     const address = await userRepository.getAddressById(addressId);
-    if(!address){
-      throw new AppError("No address found with provided id",404);
+    if (!address) {
+      throw new AppError("No address found with provided id", 404);
     }
     console.log("address is ", data);
-    
-    return await userRepository.updateAddress(userId,addressId, data);
+
+    return await userRepository.updateAddress(userId, addressId, data);
   } catch (error) {
     throw error;
   }

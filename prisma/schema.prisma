@@ -27,22 +27,32 @@ enum DivisionType {
   COUNTY
 }
 
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
 model User {
-  id                Int       @id @default(autoincrement())
-  name              String?
-  firstName         String?
-  lastName          String?
-  email             String    @unique
-  password          String
-  phoneNumber       String?   @unique
-  role              Role      @default(BUYER)
-  verificationToken String?
-  isVerified        Boolean   @default(false)
-  isActive          Boolean   @default(true)
-  userName          String?
-  address           Address[]
-  cart              Cart?
-  store             Store?
+  id                 Int       @id @default(autoincrement())
+  name               String?
+  firstName          String?
+  lastName           String?
+  email              String    @unique
+  password           String
+  phoneNumber        String?   @unique
+  role               Role      @default(BUYER)
+  verificationToken  String?
+  isVerified         Boolean   @default(false)
+  isActive           Boolean   @default(true)
+  hasShippingAddress Boolean   @default(false)
+  userName           String?
+  address            Address[]
+  cart               Cart?
+  store              Store?
+  order              Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,7 +60,7 @@ model User {
 
 model Address {
   id          Int      @id @default(autoincrement())
-  shopName    String
+  shopName    String?
   country     String
   apartment   String?
   street      String?
@@ -59,13 +69,13 @@ model Address {
   zipCode     String
   province    String?
   phoneNumber String?
-  addressType String
+  addressType String // "shipping", "billing", or "store"
   userId      Int
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  storeId     Int      @unique
-  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@unique([userId, addressType], name: "unique_address_per_type_per_user")
 }
 
 model Store {
@@ -75,9 +85,16 @@ model Store {
   storePhoneNumber String?
   storeStatus      String   @default("pending")
   userId           Int      @unique
-  address          Address?
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt        DateTime @default(now())
+  country          String?
+  apartment        String?
+  street           String?
+  state            String?
+  city             String?
+  zipCode          String?
+  province         String?
+  phoneNumber      String?
 }
 
 model Category {
@@ -94,18 +111,19 @@ model Category {
 }
 
 model Product {
-  id               Int        @id @default(autoincrement())
+  id               Int         @id @default(autoincrement())
   title            String
   description      String?
-  price            Decimal    @default(0.0) @db.Decimal(10, 2)
+  price            Decimal     @default(0.0) @db.Decimal(10, 2)
   image            String
   shortDescription String
   longDescription  String
   categoryId       Int
-  category         Category   @relation(fields: [categoryId], references: [id])
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
+  category         Category    @relation(fields: [categoryId], references: [id])
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
   CartItem         CartItem[]
+  OrderItem        OrderItem[]
 }
 
 model Cart {
@@ -126,6 +144,30 @@ model CartItem {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int     @default(1)
   price     Decimal @db.Decimal(10, 2)
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  orderNumber String      @unique
+  total       Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  notes       String?
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  orderItems OrderItem[]  
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
 }
 
 model Country {

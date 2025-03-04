@@ -19,9 +19,11 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 });
 
 exports.addAddress = asyncHandler(async (req, res) => {
-  validateAddressData(req.body);
+  // validateAddressData(req.body);
   const userId = req.user.id;
+
   const address = await userService.addUserAddress(userId, req.body);
+
   return res.status(201).json({
     status: true,
     message: "Address created succesffuly!",
@@ -57,11 +59,9 @@ exports.editAddress = asyncHandler(async (req, res) => {
   );
   console.log("update addresss is", updatedAddress);
 
-  return res
-    .status(200)
-    .json({
-      status: true,
-      message: "Address updated successfully",
-      data: { updatedAddress },
-    });
+  return res.status(200).json({
+    status: true,
+    message: "Address updated successfully",
+    data: { updatedAddress },
+  });
 });

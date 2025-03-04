@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-function generateUniqueString() {
+exports.generateUniqueString = () => {
   // Generate a random 5-digit number
   const randomNumber = Math.floor(10000 + Math.random() * 90000); // Ensures 5-digit number
 
@@ -9,9 +9,8 @@ function generateUniqueString() {
     .randomBytes(4) // Generates 4 random bytes (8 characters in hex, but we take 7)
     .toString("hex") // Convert to hexadecimal string
     .toUpperCase()
-    .slice(0, 7); // Take only the first 7 characters
+    .slice(0, 4); // Take only the first 7 characters
 
-  return `${randomNumber}#${randomString}`;
+  return `${randomNumber}${randomString}`;
 }
 
-module.exports = {generateUniqueString}
