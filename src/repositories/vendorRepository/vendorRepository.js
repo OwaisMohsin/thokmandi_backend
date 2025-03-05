@@ -29,8 +29,11 @@ exports.getAllVendorRequests = async () => {
       storeStatus:"pending"
     },
     include:{
-      address:true,
-      user:true
+      user:{
+        include:{
+          address:true
+        }
+      }
     }
   })
 }

@@ -1,14 +1,21 @@
 const prisma = require("../../config/db");
 
-exports.getAllProducts = async () => {
-  return await prisma.product.findMany({
-    select:{
-        id:true,
-        title:true,
-        price:true,
-        image:true
-    }
-  });
+exports.getAllProducts = async (page, limit) => {
+  const [products, totalCount] = await prisma.$transaction([
+    prisma.product.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        image: true,
+      },
+    }),
+    prisma.product.count(), // ✅ Get total count in the same transaction
+  ]);
+
+  return { products, totalCount };
 };
 
 exports.findProductById = async (id) => {
@@ -17,6 +24,25 @@ exports.findProductById = async (id) => {
       id: Number(id),
     },
   });
+};
+
+exports.getProductsByCategory = async (categoryId,page, limit) => {
+  const [products, totalCount] = await prisma.$transaction([
+    prisma.product.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where:{
+        categoryId
+      },
+    }),
+    prisma.product.count({
+      where:{
+        categoryId
+      }
+    }),
+  ]);
+
+  return { products, totalCount };
 };
 
 exports.createProduct = async (data) => {

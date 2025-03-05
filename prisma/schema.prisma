@@ -47,7 +47,6 @@ model User {
   verificationToken  String?
   isVerified         Boolean   @default(false)
   isActive           Boolean   @default(true)
-  hasShippingAddress Boolean   @default(false)
   userName           String?
   address            Address[]
   cart               Cart?

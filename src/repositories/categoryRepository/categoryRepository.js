@@ -23,6 +23,12 @@ exports.getCategoryById = async (id) => {
   });
 };
 
+exports.getCategoryByName = async (name) => {
+  return await prisma.category.findFirst({
+    where: { name },
+  });
+};
+
 exports.updateCategoryById = async (id, data) => {
   return await prisma.category.update({
     where: {

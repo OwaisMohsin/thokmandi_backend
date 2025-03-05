@@ -16,7 +16,7 @@ router
 
 router
     .route('/vendor/request/update/:requestId')
-    .post(checkRequest,updateRequestStatus);    
+    .put(checkRequest,updateRequestStatus);    
 
     
 

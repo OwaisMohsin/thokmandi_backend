@@ -23,7 +23,6 @@ exports.registerVendor = async (data) => {
 
   const userData = { firstName, lastName, email, password };
   const address = {
-    shopName,
     street,
     apartment,
     city,
@@ -40,6 +39,7 @@ exports.registerVendor = async (data) => {
     }
 
     const storeData = {
+      ...address,
       storeName: shopName,
       storeUrl,
       storePhoneNumber,
@@ -48,13 +48,7 @@ exports.registerVendor = async (data) => {
 
     const store = await vendorRepository.createStore(storeData);
 
-    const storeAddress = await vendorRepository.addAddress({
-      ...address,
-      phoneNumber: "",
-      addressType: "store",
-      user: { connect: { id: user.id } },
-      store: { connect: { id: store.id } },
-    });
+
 
     await userRepository.updateUserById(user.id, { role: Role.VENDOR });
 
@@ -72,3 +66,12 @@ exports.vendorRequests = async () => {
     throw error;
   }
 };
+
+
+exports.changeRequestStatus = async (id,data) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}

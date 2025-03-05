@@ -14,6 +14,9 @@ exports.findUserByEmail = async (email) => {
     where: {
       email,
     },
+    include:{
+      address:true
+    }
   });
 };
 
