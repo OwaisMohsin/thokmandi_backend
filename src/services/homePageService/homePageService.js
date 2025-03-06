@@ -2,8 +2,8 @@ const homePageRepository = require('../../repositories/homePageRepository/homePa
 
 exports.getContent = async () => {
     try {
-        const {categories} = await homePageRepository.getHomePageContent();
-        return {categories}
+        const {categories,faqs} = await homePageRepository.getHomePageContent();
+        return {categories,faqs}
     } catch (error) {
         throw error;
     }

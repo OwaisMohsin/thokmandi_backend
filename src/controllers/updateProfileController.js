@@ -57,7 +57,6 @@ exports.editAddress = asyncHandler(async (req, res) => {
     addressId,
     req.body
   );
-  console.log("update addresss is", updatedAddress);
 
   return res.status(200).json({
     status: true,

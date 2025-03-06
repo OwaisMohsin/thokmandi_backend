@@ -1,10 +1,12 @@
+const { Role } = require("@prisma/client");
 const prisma = require("../../config/db");
 
 exports.findUserById = async (id) => {
   return await prisma.user.findUnique({
     where: { id: Number(id) },
     include: {
-      address:true
+      address: true,
+      store:true
     },
   });
 };
@@ -14,9 +16,9 @@ exports.findUserByEmail = async (email) => {
     where: {
       email,
     },
-    include:{
-      address:true
-    }
+    include: {
+      address: true,
+    },
   });
 };
 
@@ -42,6 +44,14 @@ exports.updateUserById = async (id, data) => {
     data,
   });
 };
+
+exports.getUserByRole = async (role) => {
+  return await prisma.user.findFirst({
+    where:{
+      role
+    }
+  })
+}
 
 exports.addUserAddress = async (data) => {
   return await prisma.address.create({
@@ -69,6 +79,15 @@ exports.updateAddress = async (userId, addressId, data) => {
   return await prisma.address.update({
     where: {
       id: Number(addressId),
+    },
+    data,
+  });
+};
+
+exports.changeApprovalStatus = async (id,data) => {
+  return await prisma.user.update({
+    where: {
+      id:Number(id)
     },
     data,
   });

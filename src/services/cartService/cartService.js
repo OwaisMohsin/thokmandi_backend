@@ -13,8 +13,7 @@ exports.addItemToCart = async (userId, item) => {
     let cart = await cartRepository.getCartByUserId(userId);
     if (!cart) {
       cart = await cartRepository.createCart(userId);
-    }
-
+    }    
     let updatedData = {};
     const productAlreadyPresent =
       await cartRepository.getCartItemByUserAndProduct(cart.id, item.productId);

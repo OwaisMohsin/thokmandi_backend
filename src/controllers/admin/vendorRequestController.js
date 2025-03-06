@@ -1,5 +1,6 @@
 const asyncHandler = require("../../utils/asyncHandler");
 const vendorService = require("../../services/vendorService/vendorService");
+const userService = require("../../services/userService/userService");
 
 exports.getVendorRequests = asyncHandler(async (req, res) => {
   const requests = await vendorService.vendorRequests();
@@ -17,9 +18,31 @@ exports.getVendorRequests = asyncHandler(async (req, res) => {
 });
 
 exports.updateRequestStatus = asyncHandler(async (req, res) => {
-  
   const data = req.body;
-  const requestId = req.params.requestId
-  await vendorService.changeRequestStatus(requestId,data);
+  const storeId = req.params.storeId;
 
+  const updated = await vendorService.changeRequestStatus(storeId, data);
+
+  return res.status(200).json({
+    status: true,
+    message: "Status updated successfully",
+    data: { updated },
+  });
+});
+
+exports.deleteRequest = asyncHandler(async (req, res) => {
+  const storeId = req.params.storeId;
+  await vendorService.deleteStoreRequest(storeId);
+  return res
+    .status(200)
+    .json({ status: true, message: "Reqeust deleted successfully" });
+});
+
+exports.updateApprovalStatus = asyncHandler(async (req, res) => {
+  const data = req.body;
+  const userId = req.user.id;
+  const user = await userService.updateRequestApprovalStatus(userId, data);
+  return res
+    .status(200)
+    .json({ status: true, message: "Approval status updated", data: { user } });
 });

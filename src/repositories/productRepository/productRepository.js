@@ -23,6 +23,13 @@ exports.findProductById = async (id) => {
     where: {
       id: Number(id),
     },
+    include:{
+      category:{
+        select:{
+          name:true
+        }
+      }
+    }
   });
 };
 
@@ -34,6 +41,13 @@ exports.getProductsByCategory = async (categoryId,page, limit) => {
       where:{
         categoryId
       },
+      include:{
+        category:{
+          select:{
+            name:true
+          }
+        }
+      }
     }),
     prisma.product.count({
       where:{

@@ -47,6 +47,7 @@ model User {
   verificationToken  String?
   isVerified         Boolean   @default(false)
   isActive           Boolean   @default(true)
+  isApprovalRequired  Boolean @default(false)
   userName           String?
   address            Address[]
   cart               Cart?
@@ -184,4 +185,12 @@ model SubDivision {
   countryId Int
   country   Country      @relation(fields: [countryId], references: [id], onDelete: Cascade)
   createdAt DateTime     @default(now())
+}
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

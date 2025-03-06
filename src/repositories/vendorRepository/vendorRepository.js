@@ -11,9 +11,6 @@ exports.getStoreById = async (id) => {
     where: {
       id: Number(id),
     },
-    include: {
-      Address: true,
-    },
   });
 };
 
@@ -25,15 +22,32 @@ exports.addAddress = async (data) => {
 
 exports.getAllVendorRequests = async () => {
   return await prisma.store.findMany({
-    where:{
-      storeStatus:"pending"
+    // where: {
+    //   storeStatus: "pending",
+    // },
+    include: {
+      user: {
+        include: {
+          address: true,
+        },
+      },
     },
-    include:{
-      user:{
-        include:{
-          address:true
-        }
-      }
-    }
-  })
-}
+  });
+};
+
+exports.updateStoreStatus = async (id, data) => {
+  return await prisma.store.update({
+    where: {
+      id: Number(id),
+    },
+    data,
+  });
+};
+
+exports.deleteStoreById = async (id) => {
+  return await prisma.store.delete({
+    where: {
+      id: Number(id),
+    },
+  });
+};
