@@ -15,6 +15,7 @@ const vendorSideOrders = require('../routes/vendorRoutes/orderRoutes');
 const buyerProductRoutes = require('./buyerRoutes/productRoutes');
 const homeRoutes = require('./homeRoutes');
 const faqRoutes = require('../routes/adminRoutes/faqRoutes');
+const contentRoutes = require('../routes/adminRoutes/contentRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -32,6 +33,7 @@ router.use(vendorRequests);
 router.use(adminRoutes);
 router.use(productRoutes);
 router.use(faqRoutes);
+router.use(contentRoutes);
 
 
 //VENDOR ROUTES
