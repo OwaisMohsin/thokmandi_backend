@@ -16,6 +16,7 @@ const buyerProductRoutes = require('./buyerRoutes/productRoutes');
 const homeRoutes = require('./homeRoutes');
 const faqRoutes = require('../routes/adminRoutes/faqRoutes');
 const contentRoutes = require('../routes/adminRoutes/contentRoutes');
+const manageUsers = require('../routes/adminRoutes/userRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -27,13 +28,14 @@ router.use(cartRoutes);
 router.use(orderRoutes);
 router.use(buyerProductRoutes);
 
-//ADMIN ROUTES
+//ADMIN DASHBOARD ROUTES
 router.use(categoryRoutes);
 router.use(vendorRequests);
 router.use(adminRoutes);
 router.use(productRoutes);
 router.use(faqRoutes);
 router.use(contentRoutes);
+router.use(manageUsers);
 
 
 //VENDOR ROUTES

@@ -8,7 +8,7 @@ const crypto = require("crypto");
 
 exports.registerUser = async (data, req) => {
   try {
-    const {firstName, lastName, email, password } = data;
+    const { firstName, lastName, email, password } = data;
     const userFound = await userRepositoy.findUserByEmail(email);
     if (userFound) {
       throw new AppError("Email already in use", 409);
@@ -66,6 +66,12 @@ exports.loginUser = async (data) => {
     if (!user) {
       throw new AppError("Invalid email or password", 400);
     }
+
+    const userStatus = user.isActive;
+    if (!userStatus) {
+      throw new AppError("Profile is blocked", 403);
+    }
+
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
       throw new AppError("Invalid email or password", 400);
@@ -155,7 +161,10 @@ exports.userResetPassword = async (data) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await userRepositoy.updateUserById(user.id, { password: hashedPassword, verificationToken:null });
+    await userRepositoy.updateUserById(user.id, {
+      password: hashedPassword,
+      verificationToken: null,
+    });
   } catch (error) {
     throw error;
   }

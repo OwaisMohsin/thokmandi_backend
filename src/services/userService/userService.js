@@ -74,6 +74,16 @@ exports.editUserAddress = async (userId, addressId, data) => {
   }
 };
 
+exports.updateUserStatus = async (id, data) => {
+  try {
+    const user = await userRepository.changeStatus(id, data);
+    const { password: _, ...safeUser } = { ...user };
+    return safeUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.updateRequestApprovalStatus = async (id, data) => {
   try {
     const user = await userRepository.changeApprovalStatus(id, data);
@@ -83,3 +93,21 @@ exports.updateRequestApprovalStatus = async (id, data) => {
     throw error;
   }
 };
+
+
+exports.getAllBuyers = async () => {
+  try {
+    return await userRepository.fetchAllBuyers();
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+exports.deleteUser = async (id) => {
+  try {
+    return await userRepository.deleteUserById(id);
+  } catch (error) {
+    throw error;
+  }
+}

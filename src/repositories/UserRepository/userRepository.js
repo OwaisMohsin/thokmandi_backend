@@ -6,7 +6,7 @@ exports.findUserById = async (id) => {
     where: { id: Number(id) },
     include: {
       address: true,
-      store:true
+      store: true,
     },
   });
 };
@@ -47,11 +47,11 @@ exports.updateUserById = async (id, data) => {
 
 exports.getUserByRole = async (role) => {
   return await prisma.user.findFirst({
-    where:{
-      role
-    }
-  })
-}
+    where: {
+      role,
+    },
+  });
+};
 
 exports.addUserAddress = async (data) => {
   return await prisma.address.create({
@@ -84,11 +84,37 @@ exports.updateAddress = async (userId, addressId, data) => {
   });
 };
 
-exports.changeApprovalStatus = async (id,data) => {
+exports.changeApprovalStatus = async (id, data) => {
   return await prisma.user.update({
     where: {
-      id:Number(id)
+      id: Number(id),
     },
     data,
+  });
+};
+
+exports.fetchAllBuyers = async () => {
+  return await prisma.user.findMany({
+    where: {
+      role: Role.BUYER,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+exports.changeStatus = async (id, data) => {
+  return await prisma.user.update({
+    where: {
+      id: Number(id),
+    },
+    data,
+  });
+};
+
+exports.deleteUserById = async (id) => {
+  return await prisma.user.delete({
+    where: {
+      id: Number(id),
+    },
   });
 };
