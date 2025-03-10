@@ -12,6 +12,12 @@ const {
   updatePrivacyPolicy,
   getRefundPolicy,
   updateRefundPolicy,
+  getServiceTerms,
+  updateServiceTerms,
+  getProductGuidelines,
+  updateProductGuidelines,
+  getPhotographGuidelines,
+  updatePhotographGuidelines
 
 } = require("../../controllers/admin/contentController");
 
@@ -68,5 +74,35 @@ router
 router
   .route("/content/refund-policy/update")
   .post(checkRequest, updateRefundPolicy);  
+
+
+// Terms of Service
+
+router
+    .route("/content/service-terms")
+    .get(checkRequest, getServiceTerms);
+
+router
+  .route("/content/service-terms/update")
+  .post(checkRequest, updateServiceTerms); 
+  
+// Product Guidlines
+
+router
+    .route("/content/product-guidelines")
+    .get(checkRequest, getProductGuidelines);
+
+router
+  .route("/content/product-guidelines/update")
+  .post(checkRequest, updateProductGuidelines); 
+  
+  
+router
+  .route("/content/photograph-guidelines")
+  .get(checkRequest, getPhotographGuidelines);
+
+router
+.route("/content/photograph-guidelines/update")
+.post(checkRequest, updatePhotographGuidelines);   
 
 module.exports = router;

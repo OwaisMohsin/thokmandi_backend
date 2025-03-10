@@ -83,8 +83,6 @@ exports.verifyUser = async (plainToken, requestType) => {
     throw new AppError("Token is missing from URL", 400);
   }
 
-  console.log("Request type is ", requestType);
-
   const hashedToken = crypto
     .createHash("sha256")
     .update(plainToken)

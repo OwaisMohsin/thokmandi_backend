@@ -79,3 +79,58 @@ exports.upsertRefundPolicy = async (data) => {
     },
   });
 };
+
+
+exports.getServiceTerms = async () => {
+  return await prisma.termService.findMany();
+};
+
+exports.upsertServiceTerms = async (data) => {
+  return prisma.termService.upsert({
+    where: {
+      id: 1,
+    },
+    update: data,
+    create: {
+      ...data,
+    },
+  });
+};
+
+
+exports.getProductGuidelines = async () => {
+  return await prisma.websiteContent.findMany();
+};
+
+exports.upsertProductGuidelines = async (data) => {
+  return prisma.websiteContent.upsert({
+    where: {
+      type: data.type,
+    },
+    update: data,
+    create: {
+      ...data,
+    },
+  });
+};
+
+exports.getPhotographGuidelines = async () => {
+  return await prisma.websiteContent.findMany({
+    where:{
+      type:"photograph-guidelines"
+    }
+  });
+};
+
+exports.upsertPhotographGuidelines = async (data) => {
+  return prisma.websiteContent.upsert({
+    where: {
+      type: data.type,
+    },
+    update: data,
+    create: {
+      ...data,
+    },
+  });
+};
+

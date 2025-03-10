@@ -115,3 +115,78 @@ exports.updateRefundPolicy = asyncHandler(async (req, res) => {
     },
   });
 });
+
+
+exports.getServiceTerms = asyncHandler(async (req, res) => {
+  const serviceTerms = await contentService.fetchServiceTerms();
+  return res.status(200).json({
+    status: true,
+    message: "Service Terms fetched successfully",
+    data: {
+      serviceTerms,
+    },
+  });
+});
+
+exports.updateServiceTerms = asyncHandler(async (req, res) => {
+  const data = req.body;
+  const serviceTerms = await contentService.createServiceTerms(data);
+  return res.status(201).json({
+    status: true,
+    message: "ServiceTerms added successfully",
+    data: {
+      serviceTerms,
+    },
+  });
+});
+
+
+exports.getProductGuidelines = asyncHandler(async (req, res) => {
+  const productGuidelines = await contentService.fetchProductGuidelines();
+  return res.status(200).json({
+    status: true,
+    message: "Product Guidelines fetched successfully",
+    data: {
+      productGuidelines,
+    },
+  });
+});
+
+exports.updateProductGuidelines = asyncHandler(async (req, res) => {
+  const data = req.body;
+  
+  const productGuidelines = await contentService.createProductGuidelines(data);
+  return res.status(201).json({
+    status: true,
+    message: "Product Guidelines added successfully",
+    data: {
+      productGuidelines,
+    },
+  });
+});
+
+
+exports.getPhotographGuidelines = asyncHandler(async (req, res) => {
+  const photographGuidelines = await contentService.fetchPhotographGuidelines();
+  return res.status(200).json({
+    status: true,
+    message: "Photograph Guidelines fetched successfully",
+    data: {
+      photographGuidelines,
+    },
+  });
+});
+
+exports.updatePhotographGuidelines = asyncHandler(async (req, res) => {
+  const data = req.body;
+  
+  const photographGuidelines = await contentService.createPhotographGuidelines(data);
+  return res.status(201).json({
+    status: true,
+    message: "Photograph Guidelines added successfully",
+    data: {
+      photographGuidelines,
+    },
+  });
+});
+

@@ -77,3 +77,52 @@ exports.createRefundPolicy = async (data) => {
     throw error;
   }
 };
+
+exports.fetchServiceTerms = async (req, res) => {
+  try {
+    return await contentRepository.getServiceTerms();
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.createServiceTerms = async (data) => {
+  try {
+    return await contentRepository.upsertServiceTerms(data);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.fetchProductGuidelines = async (req, res) => {
+  try {
+    return await contentRepository.getProductGuidelines();
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.createProductGuidelines = async (data) => {
+  try {
+    return await contentRepository.upsertProductGuidelines(data);
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+exports.fetchPhotographGuidelines = async (req, res) => {
+  try {
+    return await contentRepository.getPhotographGuidelines();
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.createPhotographGuidelines = async (data) => {
+  try {
+    return await contentRepository.upsertPhotographGuidelines(data);
+  } catch (error) {
+    throw error;
+  }
+};
