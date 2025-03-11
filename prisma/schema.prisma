@@ -35,6 +35,27 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+}
+
+enum ExperienceLevel {
+  JUNIOR
+  MID
+  SENIOR
+}
+
+
+enum ApplicationStatus {
+  PENDING
+  INTERVIEW
+  REJECTED
+  HIRED
+}
+
 model User {
   id                 Int       @id @default(autoincrement())
   name               String?
@@ -84,8 +105,8 @@ model Store {
   storeUrl         String?
   storePhoneNumber String?
   storeStatus      String   @default("pending")
-  userId           Int      @unique
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vendorId         Int      @unique
+  user             User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   createdAt        DateTime @default(now())
   country          String?
   apartment        String?
@@ -168,6 +189,41 @@ model OrderItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+}
+
+model Job {
+  id                  Int             @id @default(autoincrement())
+  title               String
+  description         String
+  requirements        String
+  location            String
+  jobType             JobType
+  salaryRange         String?
+  experienceLevel     ExperienceLevel
+  isActive             Boolean @default(true)
+  postedAt            DateTime        @default(now())
+  applicationDeadline DateTime
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Application {
+  id            String            @id @default(uuid())
+  jobId         Int
+  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicantName String
+  email         String
+  phone         String?
+  resume        String
+  coverLetter   String?
+  status        ApplicationStatus @default(PENDING)
+  appliedAt     DateTime          @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Country {
