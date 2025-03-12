@@ -4,7 +4,7 @@ const vendorRepository = require("../../repositories/vendorRepository/vendorRepo
 const authService = require("../authService/authService");
 const AppError = require("../../utils/AppError");
 
-exports.registerVendor = async (data) => {
+exports.registerVendor = async (data,req) => {
   const {
     firstName,
     lastName,
@@ -17,6 +17,7 @@ exports.registerVendor = async (data) => {
     apartment,
     city,
     zipCode,
+    state,
     country,
     province,
     storePhoneNumber,
@@ -25,6 +26,7 @@ exports.registerVendor = async (data) => {
   const userData = { firstName, lastName, email, password };
   const address = {
     street,
+    state,
     apartment,
     city,
     zipCode,
@@ -36,20 +38,23 @@ exports.registerVendor = async (data) => {
     let user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      user = await authService.registerUser(userData);
+      user = await authService.registerUser(userData,req);
     }
 
     const storeData = {
       ...address,
       storeName: shopName,
       storeUrl,
-      storePhoneNumber,
+      phoneNumber,
       user: { connect: { id: user.id } },
     };
 
     const store = await vendorRepository.createStore(storeData);
 
     const admin = await userRepository.getUserByRole(Role.ADMIN);
+    if(!admin){
+      throw new AppError("There is no admin os system",404);
+    }
     if (!admin.isApprovalRequired) {
       await userRepository.updateUserById(user.id, { role: Role.VENDOR });
       await vendorRepository.updateStoreStatus(store.id, {
@@ -78,10 +83,14 @@ exports.changeRequestStatus = async (id, data) => {
     if (!store) {
       throw new AppError("No store found with provided Id", 404);
     }
+
     if (data.storeStatus === "accepted") {
-      await userRepository.updateUserById(store.userId, { role: Role.VENDOR });
+      await userRepository.updateUserById(store.vendorId, {
+        role: Role.VENDOR,
+      });
+    } else {
+      await userRepository.updateUserById(store.vendorId, { role: Role.BUYER });
     }
-    await userRepository.updateUserById(store.userId, { role: Role.BUYER });
     return await vendorRepository.updateStoreStatus(id, data);
   } catch (error) {
     throw error;

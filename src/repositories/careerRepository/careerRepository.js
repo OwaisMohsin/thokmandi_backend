@@ -34,3 +34,11 @@ exports.deleteJobById = async (id) => {
     },
   });
 };
+
+exports.applyForJob = async (data) => {
+  return await prisma.application.create({ data });
+};
+
+exports.getAllApplications = async () => {
+  return await prisma.application.findMany();
+};

@@ -38,10 +38,6 @@ exports.verify = asyncHandler(async (req, res) => {
     return res.redirect(result.url);
   }
 
-  if (result.type === "render") {
-    return res.render(result.view);
-  }
-
   return res.status(200).json({
     status: true,
     message: "Verification successful",

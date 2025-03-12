@@ -30,10 +30,9 @@ exports.registerUser = async (data, req) => {
       verificationToken: verificationToken.hashedToken,
     });
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}`;
-
-    // console.log("verification url is ", verificationUrl);
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}`;
+    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
 
     const subject = "Account Verification";
     const message = `
@@ -64,7 +63,7 @@ exports.loginUser = async (data) => {
 
     const user = await userRepositoy.findUserByEmail(email);
     if (!user) {
-      throw new AppError("Invalid email or password", 400);
+      throw new AppError("No user found with provided EMAIL", 404);
     }
 
     const userStatus = user.isActive;
@@ -89,6 +88,9 @@ exports.verifyUser = async (plainToken, requestType) => {
     throw new AppError("Token is missing from URL", 400);
   }
 
+  console.log("Token is",plainToken);
+  
+
   const hashedToken = crypto
     .createHash("sha256")
     .update(plainToken)
@@ -97,7 +99,7 @@ exports.verifyUser = async (plainToken, requestType) => {
   const user = await userRepositoy.findUserByHashedToken(hashedToken);
 
   if (!user) {
-    throw new AppError("Token is invalid or expired", 400);
+    throw new AppError("No user found with provided token", 404);
   }
 
   await userRepositoy.updateUserById(user.id, {

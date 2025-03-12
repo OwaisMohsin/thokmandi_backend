@@ -2,7 +2,7 @@ const asyncHandler = require("../../utils/asyncHandler");
 const vendorService = require("../../services/vendorService/vendorService");
 
 exports.vendorRegistration = asyncHandler(async (req, res) => {
-  const vendor = await vendorService.registerVendor(req.body);
+  const vendor = await vendorService.registerVendor(req.body,req);
   return res
     .status(201)
     .json({

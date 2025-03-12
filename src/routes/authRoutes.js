@@ -20,7 +20,7 @@ router
 
 router
     .route('/auth/verify/:token')
-    .get(verify);    
+    .post(verify);    
   
 
 router

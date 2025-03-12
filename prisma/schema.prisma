@@ -48,7 +48,6 @@ enum ExperienceLevel {
   SENIOR
 }
 
-
 enum ApplicationStatus {
   PENDING
   INTERVIEW
@@ -103,7 +102,6 @@ model Store {
   id               Int      @id @default(autoincrement())
   storeName        String
   storeUrl         String?
-  storePhoneNumber String?
   storeStatus      String   @default("pending")
   vendorId         Int      @unique
   user             User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
@@ -194,13 +192,13 @@ model OrderItem {
 model Job {
   id                  Int             @id @default(autoincrement())
   title               String
-  description         String
-  requirements        String
+  description         String          @db.Text
+  requirements        String          @db.Text
   location            String
   jobType             JobType
   salaryRange         String?
   experienceLevel     ExperienceLevel
-  isActive             Boolean @default(true)
+  isActive            Boolean         @default(true)
   postedAt            DateTime        @default(now())
   applicationDeadline DateTime
 
@@ -211,19 +209,19 @@ model Job {
 }
 
 model Application {
-  id            String            @id @default(uuid())
-  jobId         Int
-  job           Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicantName String
-  email         String
-  phone         String?
-  resume        String
-  coverLetter   String?
-  status        ApplicationStatus @default(PENDING)
-  appliedAt     DateTime          @default(now())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int               @id @default(autoincrement())
+  jobId       Int
+  job         Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  firstName   String
+  lastName    String
+  email       String
+  phone       String?
+  resume      String?
+  coverLetter String?
+  status      ApplicationStatus @default(PENDING)
+  appliedAt   DateTime          @default(now())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 }
 
 model Country {

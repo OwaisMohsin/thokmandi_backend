@@ -17,7 +17,7 @@ const homeRoutes = require('./homeRoutes');
 const faqRoutes = require('../routes/adminRoutes/faqRoutes');
 const contentRoutes = require('../routes/adminRoutes/contentRoutes');
 const manageUsers = require('../routes/adminRoutes/userRoutes');
-const jobRoutes = require('../routes/adminRoutes/jobRoutes');
+const careerRoutes = require('../routes/adminRoutes/careerRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -37,7 +37,7 @@ router.use(productRoutes);
 router.use(faqRoutes);
 router.use(contentRoutes);
 router.use(manageUsers);
-router.use(jobRoutes);
+router.use(careerRoutes);
 
 
 //VENDOR ROUTES
