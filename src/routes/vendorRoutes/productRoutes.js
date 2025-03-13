@@ -12,7 +12,7 @@ const router = express.Router();
 
 router
     .route('/vendor/product/create')
-    .post(checkRequest,addProduct);
+    .post(checkRequest,addProduct);    
      
 
 module.exports = router;

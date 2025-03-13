@@ -58,6 +58,12 @@ try {
 
 exports.createNewProduct = async (data) => {
   try {
+
+
+    
+
+
+
     const product = await productRepository.createProduct(data);
     return product;
   } catch (error) {

@@ -33,7 +33,6 @@ exports.getSubAdmins = asyncHandler(async (req, res) => {
 
 exports.updateSubAdmin = asyncHandler(async (req, res) => {
   const id = req.params.subAdminId
-  console.log("Body is", req.body.data,id);
   
   const updatedSubAdmin = await subAdminService.updateSubAdmin(id, req.body.data);
   return res.status(200).json({
