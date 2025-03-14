@@ -23,36 +23,36 @@ exports.findProductById = async (id) => {
     where: {
       id: Number(id),
     },
-    include:{
-      category:{
-        select:{
-          name:true
-        }
-      }
-    }
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
 };
 
-exports.getProductsByCategory = async (categoryId,page, limit) => {
+exports.getProductsByCategory = async (categoryId, page, limit) => {
   const [products, totalCount] = await prisma.$transaction([
     prisma.product.findMany({
       skip: (page - 1) * limit,
       take: limit,
-      where:{
-        categoryId
+      where: {
+        categoryId,
       },
-      include:{
-        category:{
-          select:{
-            name:true
-          }
-        }
-      }
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
     }),
     prisma.product.count({
-      where:{
-        categoryId
-      }
+      where: {
+        categoryId,
+      },
     }),
   ]);
 
@@ -63,4 +63,36 @@ exports.createProduct = async (data) => {
   return await prisma.product.create({
     data,
   });
+};
+
+exports.addProductCategories = async (data) => {
+  return await prisma.productCategory.create({ data });
+};
+
+exports.addTag = async (data) => {
+  return await prisma.tag.create({ data });
+};
+
+exports.createProductTag = async (data) => {
+  return await prisma.productTag.create({ data });
+};
+
+exports.addProductAttribute = async (data) => {
+  return await prisma.attribute.create({ data });
+};
+
+exports.addAttributeValue = async (data) => {
+  return await prisma.attributeValue.create({ data });
+};
+
+exports.createUpsellProduct = async (data) => {
+  return await prisma.productUpsell.create({ data });
+};
+
+exports.createCrossSellProduct = async (data) => {
+  return await prisma.productCrossSell.create({ data });
+};
+
+exports.createGroupedProduct = async (data) => {
+  return await prisma.productGroupItem.create({ data });
 };

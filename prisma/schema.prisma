@@ -55,7 +55,7 @@ enum ApplicationStatus {
   HIRED
 }
 
-enum ProductType{
+enum ProductType {
   SIMPLE
   VARIABLE
   AFFILIATE_PRODUCT
@@ -173,7 +173,7 @@ model Category {
   parentId          Int?
   parent            Category?         @relation("CategoryToSubcategories", fields: [parentId], references: [id], onDelete: Cascade)
   subcategories     Category[]        @relation("CategoryToSubcategories")
-  products          Product[] // One-to-many relationship (if you want to keep a primary category)
+  // products          Product[] // One-to-many relationship (if you want to keep a primary category)
   productCategories ProductCategory[] // Many-to-many relationship through join table
 
   createdAt DateTime @default(now())
@@ -230,22 +230,20 @@ model Product {
   // Products that have this product as a cross-sell
   crossSellProducts ProductCrossSell[] @relation("CrossSellProduct")
 
-    // For grouped products - products included in this group
+  // For grouped products - products included in this group
   groupedProducts ProductGroupItem[] @relation("ParentGroupProduct")
-  
+
   // Products that include this product in their group
   includedInGroups ProductGroupItem[] @relation("ChildGroupProduct")
 
-  categoryId        Int // Primary category (if needed)
   vendorId          Int
-  category          Category          @relation(fields: [categoryId], references: [id])
   productCategories ProductCategory[] // Many-to-many relationship through join table
   cartItem          CartItem[]
   orderItem         OrderItem[]
   tags              Tag[]
   ProductTag        ProductTag[]
   attributes        Attribute[]
-  user              User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendor            User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -311,22 +309,21 @@ model ProductCrossSell {
 }
 
 model ProductGroupItem {
-  id              Int     @id @default(autoincrement())
-  parentProductId Int     // The grouped product
-  childProductId  Int     // The product included in the group
-  sortOrder       Int     @default(0)
-  
+  id             Int @id @default(autoincrement())
+  productId      Int // The grouped product
+  childProductId Int // The product included in the group
+
   // Relations
-  parentProduct   Product @relation("ParentGroupProduct", fields: [parentProductId], references: [id], onDelete: Cascade)
-  childProduct    Product @relation("ChildGroupProduct", fields: [childProductId], references: [id], onDelete: Cascade)
-  
-  @@unique([parentProductId, childProductId])
+  product Product @relation("ParentGroupProduct", fields: [productId], references: [id], onDelete: Cascade)
+  childProduct  Product @relation("ChildGroupProduct", fields: [childProductId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, childProductId])
 }
 
 model Attribute {
-  id        Int              @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   name      String?
-  isVisible   Boolean @default(false)
+  isVisible Boolean @default(false)
 
   productId Int?
   product   Product?         @relation(fields: [productId], references: [id], onDelete: Cascade)

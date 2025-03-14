@@ -45,8 +45,8 @@ exports.updateCategory = asyncHandler(async (req, res) => {
 exports.deleteCategory = asyncHandler(async (req, res) => {
   const categoryId = req.params.categoryId;
   await categoryService.deleteSingleCategory(categoryId);
-  return res.stats(200).json({
-    state: true,
+  return res.status(200).json({
+    status: true,
     message: "Category deleted succesfully!",
   });
 });

@@ -95,6 +95,9 @@ exports.verifyUser = async (plainToken, requestType) => {
 
   const user = await userRepositoy.findUserByHashedToken(hashedToken);
 
+  console.log("Verified user is", user);
+  
+
   if (!user) {
     throw new AppError("No user found with provided token", 404);
   }
@@ -104,14 +107,16 @@ exports.verifyUser = async (plainToken, requestType) => {
     verificationToken: null,
   });
 
-  if (requestType === "forgot-password") {
-    return {
-      type: "redirect",
-      url: `http://192.168.18.48:3000/my-account/lost-password/email-verified/${plainToken}`,
-    };
-  }
+  return user.email;
 
-  return { type: "render", view: "verification-success" };
+  // if (requestType === "forgot-password") {
+  //   return {
+  //     type: "redirect",
+  //     url: `http://192.168.18.48:3000/my-account/lost-password/email-verified/${plainToken}`,
+  //   };
+  // }
+
+  // return { type: "render", view: "verification-success" };
 };
 
 exports.userForgotPassword = async (data, req) => {
@@ -128,15 +133,17 @@ exports.userForgotPassword = async (data, req) => {
       verificationToken: verificationToken.hashedToken,
     });
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}?type=forgot-password`;
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}?type=forgot-password`;
+
+    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
+
 
     const subject = "Password Reset";
     const message = `
       <p>Welcome!</p>
-      <p>Please verify your account by clicking the link below:</p>
-     <p>${verificationUrl}</p>
-
+      <p>Continue reset password by clicking the link below:</p>
+      <p><a href="${verificationUrl}" style="color: #007bff; text-decoration: none; font-weight: bold;">Verify Account</a></p>
       <p>If you did not sign up for this account, please ignore this message.</p>
     `;
 
