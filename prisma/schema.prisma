@@ -207,6 +207,10 @@ model Product {
   length             Decimal?      @default(0.0) @db.Decimal(10, 2)
   width              Decimal?      @default(0.0) @db.Decimal(10, 2)
   height             Decimal?      @default(0.0) @db.Decimal(10, 2)
+  seoTitle           String?
+  metaDescription    String?       @db.Text
+  focusKeyword       String?
+  slug               String?       @unique // URL-friendly version of title
   shippingClass      ShippingClass @default(NONE)
   taxStatus          TaxStatus     @default(NONE)
   taxClass           TaxClass      @default(ZERO_RATE)
@@ -314,8 +318,8 @@ model ProductGroupItem {
   childProductId Int // The product included in the group
 
   // Relations
-  product Product @relation("ParentGroupProduct", fields: [productId], references: [id], onDelete: Cascade)
-  childProduct  Product @relation("ChildGroupProduct", fields: [childProductId], references: [id], onDelete: Cascade)
+  product      Product @relation("ParentGroupProduct", fields: [productId], references: [id], onDelete: Cascade)
+  childProduct Product @relation("ChildGroupProduct", fields: [childProductId], references: [id], onDelete: Cascade)
 
   @@unique([productId, childProductId])
 }

@@ -106,6 +106,10 @@ exports.createNewProduct = async (vendorId, data) => {
       // height:data.height || '',
       // length: data.length || '',
       // width: data.width || '',
+      seoTitle:data.seoTitle,
+      metaDescription: data.metaDescription,
+      focusKeyword: data.focusKeyword,
+      slug: data.slug,
       shippingClass: data.shippingClass,
       taxStatus: data.taxStatus,
       taxClass: data.taxClass,
@@ -170,16 +174,16 @@ exports.createNewProduct = async (vendorId, data) => {
     }
 
     if (data.attributes) {
-      Object.entries(data.attributes).forEach(async ([key, values]) => {
+      Object.entries(data.attributes).forEach(async ([key, attributeValues]) => {
         const attributeData = {
           name: key,
-          isVisible: values.isVisible,
+          isVisible: attributeValues.isVisible,
           product: { connect: { id: Number(product.id) } },
         };
         const newAttribute = await productRepository.addProductAttribute(
           attributeData
         );
-        values.values.map(async (attributeName) => {
+        attributeValues.values?.map(async (attributeName) => {
           const attributeValueData = {
             attribute: { connect: { id: Number(newAttribute.id) } },
             value: attributeName,
