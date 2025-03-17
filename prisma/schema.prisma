@@ -104,27 +104,39 @@ enum Visibility {
   CATALOG
 }
 
+enum VendorOrderStatus {
+  PENDING
+  ACCEPTED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
 model User {
-  id                 Int       @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   name               String?
   firstName          String?
   lastName           String?
-  email              String    @unique
+  email              String        @unique
   password           String
-  phoneNumber        String?   @unique
-  role               Role      @default(BUYER)
+  phoneNumber        String?       @unique
+  role               Role          @default(BUYER)
   verificationToken  String?
-  isVerified         Boolean   @default(false)
-  isActive           Boolean   @default(true)
-  isApprovalRequired Boolean   @default(false)
+  isVerified         Boolean       @default(false)
+  isActive           Boolean       @default(true)
+  isApprovalRequired Boolean       @default(false)
   userName           String?
   address            Address[]
   cart               Cart?
   store              Store?
   order              Order[]
-  products           Product[]
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  vendorOrder        VendorOrder[]
+
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Address {
@@ -245,7 +257,7 @@ model Product {
   cartItem          CartItem[]
   orderItem         OrderItem[]
   tags              Tag[]
-  ProductTag        ProductTag[]
+  ProductTags        ProductTag[]
   attributes        Attribute[]
   vendor            User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
@@ -373,7 +385,8 @@ model Order {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  orderItems OrderItem[]
+  orderItems   OrderItem[]
+  vendorOrders VendorOrder[]
 }
 
 model OrderItem {
@@ -383,6 +396,25 @@ model OrderItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+
+  vendorOrderId Int?
+  vendorOrder   VendorOrder? @relation(fields: [vendorOrderId], references: [id])
+}
+
+model VendorOrder {
+  id             Int               @id @default(autoincrement())
+  orderId        Int // Reference to the main order
+  order          Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorId       Int // Reference to the vendor
+  vendor         User              @relation(fields: [vendorId], references: [id])
+  status         VendorOrderStatus @default(PENDING)
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([orderId, vendorId])
 }
 
 model Job {

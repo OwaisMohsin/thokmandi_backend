@@ -18,6 +18,7 @@ exports.findUserByEmail = async (email) => {
     },
     include: {
       address: true,
+      store: true,
     },
   });
 };

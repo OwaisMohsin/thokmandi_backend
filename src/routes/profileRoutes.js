@@ -2,6 +2,7 @@
 const express = require('express');
 const {checkRequest} = require('../middlewares/requestFilter');
 const { addAddress,editAddress,getAddress } = require('../controllers/updateProfileController');
+const {updateProfile} = require('../controllers/updateProfileController');
 
 
 
@@ -17,6 +18,10 @@ router
 router
     .route('/user/address')
     .get(checkRequest,getAddress)
+
+router
+    .route('/user/update-profile')
+    .patch(checkRequest,updateProfile);    
 
 
 router

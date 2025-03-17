@@ -1,8 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../middlewares/requestFilter');
-const {register,verify, login,forgotPassword,resetPassword} = require('../controllers/authController');
-const {updateProfile} = require('../controllers/updateProfileController');
+const {register,verify, login,forgotPassword,resetPassword,resendVerficationLink} = require('../controllers/authController');
 const { addCountry,getCountries } = require('../controllers/countryController');
 
 // variable initializations
@@ -20,7 +19,11 @@ router
 
 router
     .route('/auth/verify/:token')
-    .post(verify);    
+    .post(verify);   
+    
+router
+    .route('/auth/resend-link')
+    .post(resendVerficationLink);    
   
 
 router
@@ -31,9 +34,7 @@ router
     .route('/auth/reset-password')
     .patch(resetPassword);
 
-router
-    .route('/user/update-profile')
-    .patch(checkRequest,updateProfile);
+
 
 router
     .route('/country/create')

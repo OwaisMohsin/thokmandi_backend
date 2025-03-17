@@ -14,13 +14,32 @@ exports.createOrder = async (userId, data) => {
     };
     const order = await orderRepository.createNewOrder(orderData);
 
-    for (const orderItem of data.items) {
-      const item = {
+    const itemsByVendor = {};
+    for (const item of data.items) {
+      if (!itemsByVendor[item.vendorId]) {
+        itemsByVendor[item.vendorId] = [];
+      }
+      itemsByVendor[item.vendorId].push(item);
+    }
+
+    for (const vendorId in itemsByVendor) {
+      const vendorOrderData = {
         order: { connect: { id: order.id } },
-        product: { connect: { id: orderItem.productId } },
-        quantity: orderItem.quantity,
+        vendor: { connect: { id: Number(vendorId) } },
       };
-      await orderRepository.addOrderItem(item);
+
+      const vendorOrder = await orderRepository.createNewVendorOrder(vendorOrderData);
+
+      // Add all items for this vendor
+      for (const orderItem of itemsByVendor[vendorId]) {
+        const item = {
+          order: { connect: { id: order.id } },
+          product: { connect: { id: orderItem.productId } },
+          quantity: orderItem.quantity,
+          vendorOrder: { connect: { id: vendorOrder.id } },
+        };
+        await orderRepository.addOrderItem(item);
+      }
     }
 
     return await orderRepository.getOrderById(order.orderNumber);

@@ -7,13 +7,11 @@ const asyncHandler = require("../utils/asyncHandler");
 
 exports.register = asyncHandler(async (req, res) => {
   validateUserData(req.body);
-  const user = await authService.registerUser(req.body, req);
-  if (!user) return;
+  await authService.registerUser(req.body, req);
 
   return res.status(201).json({
     status: true,
     message: "User registered successfully",
-    data: { user },
   });
 });
 
@@ -29,26 +27,25 @@ exports.login = asyncHandler(async (req, res) => {
 });
 
 exports.verify = asyncHandler(async (req, res) => {
-
-  console.log("Called verification API");
-  
   const plainToken = req.params.token;
   const requestType = req.query.type || "";
 
   const userEmail = await authService.verifyUser(plainToken, requestType);
-
-  console.log("VErification completed");
-  
-
-  // if (result.type === "redirect") {
-  //   return res.redirect(result.url);
-  // }
 
   return res.status(200).json({
     status: true,
     message: "Verification successful",
     data: { email: userEmail },
   });
+});
+
+exports.resendVerficationLink = asyncHandler(async (req, res) => {
+  const data = req.body;
+
+  await authService.resendLink(data);
+  return res
+    .status(200)
+    .json({ status: true, message: "Verification Link send successfully" });
 });
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {

@@ -4,20 +4,13 @@ exports.createNewOrder = async (data) => {
   return await prisma.order.create({ data });
 };
 
+exports.createNewVendorOrder = async (data) => {
+  return await prisma.vendorOrder.create(data);
+};
+
 exports.addOrderItem = async (data) => {
   return await prisma.orderItem.create({ data });
 };
-
-// exports.getOrderById = async (id) => {
-//   return await prisma.order.findUnique({
-//     where: {
-//       id: Number(id),
-//     },
-//     include: {
-//       orderItems: true,
-//     },
-//   });
-// };
 
 exports.getAllOrdersByUserId = async (userId) => {
   return await prisma.order.findMany({
@@ -60,13 +53,12 @@ exports.getOrderById = async (id) => {
             },
           },
         },
-
       },
-      user:{
-        select:{
-            address:true
-        }
-      }
+      user: {
+        select: {
+          address: true,
+        },
+      },
     },
   });
 };
@@ -83,7 +75,7 @@ exports.updateOrderById = async (orderId, data) => {
 exports.deleteOrderById = async (id) => {
   return await prisma.order.delete({
     where: {
-      orderNumber:id,
+      orderNumber: id,
     },
   });
 };

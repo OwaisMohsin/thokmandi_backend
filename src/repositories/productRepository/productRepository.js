@@ -24,9 +24,19 @@ exports.findProductById = async (id) => {
       id: Number(id),
     },
     include: {
-      category: {
-        select: {
-          name: true,
+      attributes: {
+        include: {
+          values: true,
+        },
+      },
+      ProductTags:{
+        include:{
+          tag:true
+        }
+      },
+      productCategories: {
+        include: {
+          category: true,
         },
       },
     },

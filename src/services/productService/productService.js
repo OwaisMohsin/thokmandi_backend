@@ -75,7 +75,7 @@ exports.createNewProduct = async (vendorId, data) => {
       case "affilate":
         type = ProductType.AFFILIATE_PRODUCT;
         break;
-      case "group":
+      case "Group":
         type = ProductType.GROUP_PRODUCT;
         break;
       default:

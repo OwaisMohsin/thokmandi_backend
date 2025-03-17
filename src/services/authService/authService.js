@@ -49,9 +49,8 @@ exports.registerUser = async (data, req) => {
       verificationToken: verificationToken.plainToken,
     });
 
-    const token = createToken(user.id);
-    const { password: _, ...safeUser } = { ...user, token };
-    return safeUser;
+
+    return;
   } catch (error) {
     throw error;
   }
@@ -69,6 +68,10 @@ exports.loginUser = async (data) => {
     const userStatus = user.isActive;
     if (!userStatus) {
       throw new AppError("Profile is blocked", 403);
+    }
+
+    if (!user.isVerified) {
+      throw new AppError("Verify your account first", 409);
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
@@ -95,9 +98,6 @@ exports.verifyUser = async (plainToken, requestType) => {
 
   const user = await userRepositoy.findUserByHashedToken(hashedToken);
 
-  console.log("Verified user is", user);
-  
-
   if (!user) {
     throw new AppError("No user found with provided token", 404);
   }
@@ -107,17 +107,50 @@ exports.verifyUser = async (plainToken, requestType) => {
     verificationToken: null,
   });
 
-  return user.email;
+  const newUser = await userRepositoy.findUserByEmail(user.email);
 
-  // if (requestType === "forgot-password") {
-  //   return {
-  //     type: "redirect",
-  //     url: `http://192.168.18.48:3000/my-account/lost-password/email-verified/${plainToken}`,
-  //   };
-  // }
+  if(requestType !== 'forgot-password'){
+    const token = createToken(newUser.id);
+    const { password: _, ...safeUser } = { ...newUser, token };
+    return safeUser;
+  }else{
 
-  // return { type: "render", view: "verification-success" };
+    return user.email;
+  }
+
 };
+
+exports.resendLink = async (data) => {
+  try {
+    const user = await userRepositoy.findUserByEmail(data.email);
+    if (!user) {
+      throw new AppError("No user found with provided EMAIL", 404);
+    }
+    const verificationToken = await generateRandomToken();
+    await userRepositoy.updateUserById(user.id, {
+      verificationToken: verificationToken.hashedToken,
+    });
+    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+
+    const subject = "Account Verification";
+    const message = `
+      <p>Welcome!</p>
+      <p>Please verify your account by clicking the link below:</p>
+      <p><a href="${verificationUrl}" style="color: #007bff; text-decoration: none; font-weight: bold;">Verify Account</a></p>
+      <p>If you did not request this, please ignore this message.</p>
+    `;
+
+    await sendEmail({
+      email: data.email,
+      message,
+      subject,
+      verificationToken: verificationToken.plainToken,
+    });
+    return;
+  } catch (error) {
+    throw error;
+  }
+}
 
 exports.userForgotPassword = async (data, req) => {
   try {
@@ -137,7 +170,6 @@ exports.userForgotPassword = async (data, req) => {
     // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}?type=forgot-password`;
 
     const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
-
 
     const subject = "Password Reset";
     const message = `

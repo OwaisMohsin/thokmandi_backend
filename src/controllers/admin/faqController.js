@@ -22,6 +22,7 @@ exports.createFaq = async (req, res) => {
     question: req.body.question,
     answer: req.body.answer,
   };
+
   const faq = await faqService.createFaq(data);
 
   return res.status(201).json({
