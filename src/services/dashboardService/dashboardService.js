@@ -3,15 +3,19 @@ const dashboardRepository = require("../../repositories/dashRepository/dashboard
 
 exports.fetchDashboardData = async (req, res) => {
   try {
-    const users = await dashboardRepository.getAllUsers();
-    const allUsers = users.filter((user) => user.role !== Role.ADMIN);
-    console.log(typeof(allUsers));
     
-    const buyers = allUsers.filter((user) => user.role === Role.BUYER).length;
-    const vendors = allUsers
-      .filter((user) => user.role === Role.VENDOR)
-      .length;
+    const users = await dashboardRepository.getAllUsers();
+
+    const allUsers = users.filter((user) => user.role !== Role.ADMIN);
+
+    
+    
+    const buyers = allUsers.filter((user) => user.role === Role.BUYER);
+    // console.log("All users are", buyers);
+    const vendors = allUsers.filter((user) => user.role === Role.VENDOR);
     const products = await dashboardRepository.getAllProductsCount();
+
+    // console.log(buyers, vendors, products);
 
     return {
       buyers,

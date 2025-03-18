@@ -62,10 +62,6 @@ exports.fetchProductsByCategory = async (pageNumber, categoryName) => {
 };
 
 exports.createNewProduct = async (vendorId, data) => {
-
-  console.log("Data is",data);
-  
-
   try {
     // const dateFields = ["from", "to"];
     // dateFields.forEach((field) => {
@@ -300,8 +296,6 @@ exports.createNewProduct = async (vendorId, data) => {
         }
       );
     }
-
-    console.log("Products is", product);
 
     return product;
   } catch (error) {

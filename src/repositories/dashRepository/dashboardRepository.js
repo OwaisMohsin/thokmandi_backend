@@ -1,7 +1,12 @@
 const prisma = require("../../config/db");
 
 exports.getAllUsers = async () => {
-  return await prisma.user.findMany();
+  return await prisma.user.findMany({
+    select:{
+      createdAt:true,
+      role:true
+    }
+  });
 };
 
 
