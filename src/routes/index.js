@@ -4,7 +4,7 @@ const express = require('express');
 // file imports
 const authRoutes = require('../routes/authRoutes');
 const profileRoutes = require('../routes/profileRoutes');
-const adminRoutes = require('../routes/adminRoutes/adminRoutes');
+const adminRoutes = require('../routes/adminRoutes/subAdminRoutes');
 const vendorRoutes = require('../routes/vendorRoutes/vendorRoutes');
 const categoryRoutes = require('../routes/adminRoutes/categoryRoutes');
 const productRoutes = require('../routes/vendorRoutes/productRoutes');
@@ -18,6 +18,8 @@ const faqRoutes = require('../routes/adminRoutes/faqRoutes');
 const contentRoutes = require('../routes/adminRoutes/contentRoutes');
 const manageUsers = require('../routes/adminRoutes/userRoutes');
 const careerRoutes = require('../routes/adminRoutes/careerRoutes');
+const vendorCouponRoutes = require('../routes/vendorRoutes/couponRoutes');
+const dashboardRoutes = require('../routes/adminRoutes/dashboardRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -38,11 +40,13 @@ router.use(faqRoutes);
 router.use(contentRoutes);
 router.use(manageUsers);
 router.use(careerRoutes);
+router.use(dashboardRoutes);
 
 
 //VENDOR ROUTES
 router.use(vendorSideOrders);
 router.use(vendorRoutes);
+router.use(vendorCouponRoutes);
 
 //GENERIC ROUTES
 router.use(authRoutes);

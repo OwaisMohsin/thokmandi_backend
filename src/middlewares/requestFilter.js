@@ -35,6 +35,7 @@ exports.checkRequest = async (req, res, next) => {
         firstName: true,
         lastName: true,
         email: true,
+        role:true
       },
     });
 

@@ -114,6 +114,12 @@ enum VendorOrderStatus {
   REFUNDED
 }
 
+enum CouponStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
 model User {
   id                 Int           @id @default(autoincrement())
   name               String?
@@ -134,9 +140,12 @@ model User {
   order              Order[]
   vendorOrder        VendorOrder[]
 
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  userCoupons   User_Coupon[]
+  vendorCoupons VendorCoupon[]
+  products      Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Address {
@@ -201,18 +210,18 @@ model Product {
   productUrl         String?
   buttonText         String?
   price              Decimal       @default(0.0) @db.Decimal(10, 2)
-  discountedPrice    Decimal       @default(0.0) @db.Decimal(10, 2)
-  from               DateTime?
+  discountedPrice    Decimal?      @default(0.0) @db.Decimal(10, 2)
+  from               DateTime?     
   to                 DateTime?
   shortDescription   String?
   image              String?
   description        String
   sku                String
-  stockStatus        StockStatus   @default(IN_STOCK)
+  stockStatus        StockStatus?   @default(IN_STOCK)
   stockManagement    Boolean       @default(false)
   stockQuantity      Int?
   lowStockThreshold  Int?
-  backOrder          BackOrder     @default(DO_NOT_ALLOW)
+  backOrder          BackOrder?     @default(DO_NOT_ALLOW)
   limitOnePerOrder   Boolean       @default(false)
   shippingRequired   Boolean       @default(false)
   weight             Decimal?      @default(0.0) @db.Decimal(10, 2)
@@ -257,7 +266,7 @@ model Product {
   cartItem          CartItem[]
   orderItem         OrderItem[]
   tags              Tag[]
-  ProductTags        ProductTag[]
+  ProductTags       ProductTag[]
   attributes        Attribute[]
   vendor            User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
@@ -402,12 +411,12 @@ model OrderItem {
 }
 
 model VendorOrder {
-  id             Int               @id @default(autoincrement())
-  orderId        Int // Reference to the main order
-  order          Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  vendorId       Int // Reference to the vendor
-  vendor         User              @relation(fields: [vendorId], references: [id])
-  status         VendorOrderStatus @default(PENDING)
+  id       Int               @id @default(autoincrement())
+  orderId  Int // Reference to the main order
+  order    Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorId Int // Reference to the vendor
+  vendor   User              @relation(fields: [vendorId], references: [id])
+  status   VendorOrderStatus @default(PENDING)
 
   orderItems OrderItem[]
 
@@ -450,6 +459,34 @@ model Application {
   appliedAt   DateTime          @default(now())
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+}
+
+model VendorCoupon {
+  id            Int          @id @default(autoincrement())
+  couponCode    String
+  discountValue Decimal      @db.Decimal(10, 2)
+  discountType  String
+  expiry        DateTime
+  couponStatus  CouponStatus @default(ACTIVE)
+  minPurchase   Decimal      @db.Decimal(10,2)
+  maxUsage      Int
+  description   String?
+  isActive      Boolean      @default(true)
+  vendorId      Int
+  vendor        User         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userCoupons User_Coupon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model User_Coupon {
+  id       Int          @id @default(autoincrement())
+  userId   Int
+  couponId Int
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon   VendorCoupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
 }
 
 model Country {
@@ -532,5 +569,3 @@ model ProductGuideline {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
-

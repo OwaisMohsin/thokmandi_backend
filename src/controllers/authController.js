@@ -30,19 +30,20 @@ exports.verify = asyncHandler(async (req, res) => {
   const plainToken = req.params.token;
   const requestType = req.query.type || "";
 
-  const userEmail = await authService.verifyUser(plainToken, requestType);
+  const data = await authService.verifyUser(plainToken, requestType);
 
   return res.status(200).json({
     status: true,
     message: "Verification successful",
-    data: { email: userEmail },
+    data: data.type === "user" ? { user: data.user } : { email: data.email }
   });
 });
 
 exports.resendVerficationLink = asyncHandler(async (req, res) => {
   const data = req.body;
+  const requestType = req.query.type;
 
-  await authService.resendLink(data);
+  await authService.resendLink(data,requestType);
   return res
     .status(200)
     .json({ status: true, message: "Verification Link send successfully" });

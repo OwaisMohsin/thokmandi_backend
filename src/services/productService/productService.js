@@ -1,7 +1,15 @@
 const productRepository = require("../../repositories/productRepository/productRepository");
 const categoryRepository = require("../../repositories/categoryRepository/categoryRepository");
 const AppError = require("../../utils/AppError");
-const { ProductType } = require("@prisma/client");
+const {
+  ProductType,
+  TaxStatus,
+  TaxClass,
+  StockStatus,
+  ProductStatus,
+  Visibility,
+  BackOrder,
+} = require("@prisma/client");
 
 exports.getProducts = async (pageNumber) => {
   try {
@@ -54,25 +62,36 @@ exports.fetchProductsByCategory = async (pageNumber, categoryName) => {
 };
 
 exports.createNewProduct = async (vendorId, data) => {
+
+  console.log("Data is",data);
+  
+
   try {
-    const dateFields = ["from", "to"];
-    dateFields.forEach((field) => {
-      if (data[field] && data[field] !== "timestamp") {
-        data[field] = new Date(data[field]);
-      } else if (data[field] === "timestamp") {
-        data[field] = new Date();
-      }
-    });
+    // const dateFields = ["from", "to"];
+    // dateFields.forEach((field) => {
+    //   if (data[field] && data[field] !== "timestamp") {
+    //     data[field] = new Date(data[field]);
+    //   } else if (data[field] === "timestamp") {
+    //     data[field] = new Date();
+    //   }
+    // });
 
     let type = "";
+    let taxStatusType = "";
+    let taxClassType = "";
+    let stockStatusType = "";
+    let productStatusType = "";
+    let visibilityType = "";
+    let backOrderType = "";
+
     switch (data.productType) {
-      case "simple":
+      case "Simple":
         type = ProductType.SIMPLE;
         break;
-      case "variable":
+      case "Variable":
         type = ProductType.VARIABLE;
         break;
-      case "affilate":
+      case "External":
         type = ProductType.AFFILIATE_PRODUCT;
         break;
       case "Group":
@@ -80,6 +99,90 @@ exports.createNewProduct = async (vendorId, data) => {
         break;
       default:
         type = "";
+    }
+
+    switch (data.taxStatus) {
+      case "Taxable":
+        taxStatusType = TaxStatus.TAXABLE;
+        break;
+      case "Shipping Only":
+        taxStatusType = TaxStatus.SHIPPING_ONLY;
+        break;
+      case "None":
+        taxStatusType = TaxStatus.NONE;
+        break;
+      default:
+        taxStatusType = "";
+    }
+
+    switch (data.taxClass) {
+      case "Standard":
+        taxClassType = TaxClass.STANDARD;
+        break;
+      case "Reduced Rate":
+        taxClassType = TaxClass.REDUCED_RATE;
+        break;
+      case "Zero Rate":
+        taxClassType = TaxClass.ZERO_RATE;
+        break;
+      default:
+        taxClassType = "";
+    }
+
+    switch (data.stockStatus) {
+      case "In Stock":
+        stockStatusType = StockStatus.IN_STOCK;
+        break;
+      case "Out of Stock":
+        stockStatusType = StockStatus.OUT_OF_STOCK;
+        break;
+      case "On Backorder":
+        stockStatusType = StockStatus.ON_BACKORDER;
+        break;
+      default:
+        stockStatusType = "";
+    }
+
+    switch (data.productStatus) {
+      case "Online":
+        productStatusType = ProductStatus.ONLINE;
+        break;
+      case "Draft":
+        productStatusType = ProductStatus.DRAFT;
+        break;
+      default:
+        productStatusType = "";
+    }
+
+    switch (data.visibility) {
+      case "Visible":
+        visibilityType = Visibility.VISIBLE;
+        break;
+      case "Hidden":
+        visibilityType = Visibility.HIDDEN;
+        break;
+      case "Catalog":
+        visibilityType = Visibility.CATALOG;
+        break;
+      case "Search":
+        visibilityType = Visibility.SEARCH;
+        break;
+      default:
+        visibilityType = "";
+    }
+
+    switch (data.backOrder) {
+      case "Do Not Allow":
+        backOrderType = BackOrder.DO_NOT_ALLOW;
+        break;
+      case "Allow, But Notify Customer":
+        backOrderType = BackOrder.ALLOW_BUT_NOTIFY;
+        break;
+      case "Allow":
+        backOrderType = BackOrder.ALLOW;
+        break;
+      default:
+        backOrderType = "";
     }
 
     const productData = {
@@ -91,30 +194,33 @@ exports.createNewProduct = async (vendorId, data) => {
       buttonText: data.buttonText || "",
       price: data.price,
       discountedPrice: data.discountedPrice,
-      from: data.from || "",
-      to: data.to || "",
+      from: data.from || null,
+      to: data.to || null,
       shortDescription: data.shortDescription,
       description: data.description,
       sku: data.sku,
-      stockStatus: data.stockStatus,
+      stockStatus: stockStatusType || StockStatus.IN_STOCK,
+      backOrder: backOrderType,
       stockManagement: data.stockManagement,
       stockQuantity: data.stockQuantity || "",
       lowStockThreshold: data.lowStockThreshold || "",
+
       limitOnePerOrder: data.limitOnePerOrder,
       shippingRequired: data.shippingRequired,
-      // weight:data.weight || '',
-      // height:data.height || '',
-      // length: data.length || '',
-      // width: data.width || '',
-      seoTitle:data.seoTitle,
+      weight: data.weight || 0.0,
+      height: data.height || 0.0,
+      length: data.length || 0.0,
+      width: data.width || 0.0,
+      seoTitle: data.seoTitle,
       metaDescription: data.metaDescription,
       focusKeyword: data.focusKeyword,
       slug: data.slug,
       shippingClass: data.shippingClass,
-      taxStatus: data.taxStatus,
-      taxClass: data.taxClass,
+      taxStatus: taxStatusType,
+      taxClass: taxClassType,
       bulkDiscount: data.bulkDiscount,
-      visibility: data.visibility,
+      productStatus: productStatusType,
+      visibility: visibilityType,
       enableReviews: data.enableReviews,
 
       vendor: { connect: { id: Number(vendorId) } },
@@ -174,23 +280,25 @@ exports.createNewProduct = async (vendorId, data) => {
     }
 
     if (data.attributes) {
-      Object.entries(data.attributes).forEach(async ([key, attributeValues]) => {
-        const attributeData = {
-          name: key,
-          isVisible: attributeValues.isVisible,
-          product: { connect: { id: Number(product.id) } },
-        };
-        const newAttribute = await productRepository.addProductAttribute(
-          attributeData
-        );
-        attributeValues.values?.map(async (attributeName) => {
-          const attributeValueData = {
-            attribute: { connect: { id: Number(newAttribute.id) } },
-            value: attributeName,
+      Object.entries(data.attributes).forEach(
+        async ([key, attributeValues]) => {
+          const attributeData = {
+            name: key,
+            isVisible: attributeValues.isVisible,
+            product: { connect: { id: Number(product.id) } },
           };
-          await productRepository.addAttributeValue(attributeValueData);
-        });
-      });
+          const newAttribute = await productRepository.addProductAttribute(
+            attributeData
+          );
+          attributeValues.values?.map(async (attributeName) => {
+            const attributeValueData = {
+              attribute: { connect: { id: Number(newAttribute.id) } },
+              value: attributeName,
+            };
+            await productRepository.addAttributeValue(attributeValueData);
+          });
+        }
+      );
     }
 
     console.log("Products is", product);

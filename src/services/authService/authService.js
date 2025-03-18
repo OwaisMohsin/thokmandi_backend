@@ -49,7 +49,6 @@ exports.registerUser = async (data, req) => {
       verificationToken: verificationToken.plainToken,
     });
 
-
     return;
   } catch (error) {
     throw error;
@@ -96,31 +95,31 @@ exports.verifyUser = async (plainToken, requestType) => {
     .update(plainToken)
     .digest("hex");
 
-  const user = await userRepositoy.findUserByHashedToken(hashedToken);
+  const userFound = await userRepositoy.findUserByHashedToken(hashedToken);
 
-  if (!user) {
+  if (!userFound) {
     throw new AppError("No user found with provided token", 404);
   }
 
-  await userRepositoy.updateUserById(user.id, {
+  await userRepositoy.updateUserById(userFound.id, {
     isVerified: true,
     verificationToken: null,
   });
 
-  const newUser = await userRepositoy.findUserByEmail(user.email);
+  const user = await userRepositoy.findUserByEmail(userFound.email);
 
-  if(requestType !== 'forgot-password'){
-    const token = createToken(newUser.id);
-    const { password: _, ...safeUser } = { ...newUser, token };
-    return safeUser;
-  }else{
-
-    return user.email;
+  if (requestType !== "forgot-password") {
+    const token = createToken(user.id);
+    const { password: _, ...safeUser } = { ...user, token };
+    return { user: safeUser, type: "user" };
+  } else {
+    return { email: user.email, type: "email" };
   }
-
 };
 
-exports.resendLink = async (data) => {
+exports.resendLink = async (data, requestType) => {
+  console.log(requestType);
+
   try {
     const user = await userRepositoy.findUserByEmail(data.email);
     if (!user) {
@@ -130,15 +129,30 @@ exports.resendLink = async (data) => {
     await userRepositoy.updateUserById(user.id, {
       verificationToken: verificationToken.hashedToken,
     });
-    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
-
-    const subject = "Account Verification";
-    const message = `
+    let verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+    let subject = "";
+    let message = "";
+    if (requestType === "forgot-password") {
+      verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
+      subject = "Password Reset";
+      message = `
       <p>Welcome!</p>
-      <p>Please verify your account by clicking the link below:</p>
+      <p>Continue resetting password by clicking the link below:</p>
       <p><a href="${verificationUrl}" style="color: #007bff; text-decoration: none; font-weight: bold;">Verify Account</a></p>
-      <p>If you did not request this, please ignore this message.</p>
-    `;
+      <p>If you did not sign up for this account, please ignore this message.</p>
+
+    
+      `;
+    } else {
+      verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+
+      subject = "Acount Verificiation";
+      message = `
+        <p>Welcome!</p>
+        <p>Please verify your account by clicking the link below:</p>
+        <p><a href="${verificationUrl}" style="color: #007bff; text-decoration: none; font-weight: bold;">Verify Account</a></p>
+        <p>If you did not request this, please ignore this message.</p>`;
+    }
 
     await sendEmail({
       email: data.email,
@@ -150,7 +164,7 @@ exports.resendLink = async (data) => {
   } catch (error) {
     throw error;
   }
-}
+};
 
 exports.userForgotPassword = async (data, req) => {
   try {
