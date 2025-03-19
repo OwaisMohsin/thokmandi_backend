@@ -9,6 +9,7 @@ const {
   ProductStatus,
   Visibility,
   BackOrder,
+  ShippingClass,
 } = require("@prisma/client");
 
 exports.getProducts = async (pageNumber) => {
@@ -79,6 +80,7 @@ exports.createNewProduct = async (vendorId, data) => {
     let productStatusType = "";
     let visibilityType = "";
     let backOrderType = "";
+    let shippingClassType = "";
 
     switch (data.productType) {
       case "Simple":
@@ -123,6 +125,20 @@ exports.createNewProduct = async (vendorId, data) => {
         break;
       default:
         taxClassType = "";
+    }
+
+    switch (data.shippingClass) {
+      case "No Shipping Class (€0)":
+        shippingClassType = ShippingClass.NONE;
+        break;
+      case "Portugal Flat Rate":
+        shippingClassType = ShippingClass.PORTUGAL_FLAT_RATE;
+        break;
+      case "Flat Rate":
+        shippingClassType = ShippingClass.FLAT_RATE;
+        break;
+      default:
+        shippingClassType = "";
     }
 
     switch (data.stockStatus) {
@@ -198,8 +214,8 @@ exports.createNewProduct = async (vendorId, data) => {
       stockStatus: stockStatusType || StockStatus.IN_STOCK,
       backOrder: backOrderType,
       stockManagement: data.stockManagement,
-      stockQuantity: data.stockQuantity || "",
-      lowStockThreshold: data.lowStockThreshold || "",
+      stockQuantity: data.stockQuantity,
+      lowStockThreshold: data.lowStockThreshold,
 
       limitOnePerOrder: data.limitOnePerOrder,
       shippingRequired: data.shippingRequired,
@@ -211,7 +227,7 @@ exports.createNewProduct = async (vendorId, data) => {
       metaDescription: data.metaDescription,
       focusKeyword: data.focusKeyword,
       slug: data.slug,
-      shippingClass: data.shippingClass,
+      shippingClass: shippingClassType,
       taxStatus: taxStatusType,
       taxClass: taxClassType,
       bulkDiscount: data.bulkDiscount,
@@ -225,57 +241,93 @@ exports.createNewProduct = async (vendorId, data) => {
     const product = await productRepository.createProduct(productData);
 
     if (data.categories && data.categories.length > 0) {
-      data.categories.map(async (category) => {
+      for (const category of data.categories) {
         let data = {
           product: { connect: { id: Number(product.id) } },
           category: { connect: { id: Number(category) } },
         };
         await productRepository.addProductCategories(data);
-      });
+      }
+      // data.categories.map(async (category) => {
+      //   let data = {
+      //     product: { connect: { id: Number(product.id) } },
+      //     category: { connect: { id: Number(category) } },
+      //   };
+      //   await productRepository.addProductCategories(data);
+      // });
     }
 
     if (data.tags && data.tags.length > 0) {
-      data.tags.map(async (tag) => {
+      for (const tag of data.tags) {
         const newTag = await productRepository.addTag({ name: tag });
         let tagData = {
           product: { connect: { id: Number(product.id) } },
           tag: { connect: { id: Number(newTag.id) } },
         };
         await productRepository.createProductTag(tagData);
-      });
+      }
+      // data.tags.map(async (tag) => {
+      //   const newTag = await productRepository.addTag({ name: tag });
+      //   let tagData = {
+      //     product: { connect: { id: Number(product.id) } },
+      //     tag: { connect: { id: Number(newTag.id) } },
+      //   };
+      //   await productRepository.createProductTag(tagData);
+      // });
     }
 
     if (data.upsells && data.upsells.length > 0) {
-      data.upsells.map(async (upsellProductId) => {
+      for (const upsellProductId of data.upsells) {
         let upsellData = {
           product: { connect: { id: Number(product.id) } },
           upsellProduct: { connect: { id: Number(upsellProductId) } },
         };
         await productRepository.createUpsellProduct(upsellData);
-      });
+      }
+      // data.upsells.map(async (upsellProductId) => {
+      //   let upsellData = {
+      //     product: { connect: { id: Number(product.id) } },
+      //     upsellProduct: { connect: { id: Number(upsellProductId) } },
+      //   };
+      //   await productRepository.createUpsellProduct(upsellData);
+      // });
     }
 
     if (data.crossSells && data.crossSells.length > 0) {
-      data.crossSells.map(async (crossSellproductId) => {
+      for (const crossSellproductId of data.crossSells) {
         let crossSellsData = {
           product: { connect: { id: Number(product.id) } },
           crossSellProduct: { connect: { id: Number(crossSellproductId) } },
         };
         await productRepository.createCrossSellProduct(crossSellsData);
-      });
+      }
+      // data.crossSells.map(async (crossSellproductId) => {
+      //   let crossSellsData = {
+      //     product: { connect: { id: Number(product.id) } },
+      //     crossSellProduct: { connect: { id: Number(crossSellproductId) } },
+      //   };
+      //   await productRepository.createCrossSellProduct(crossSellsData);
+      // });
     }
 
     if (data.groupProducts && data.groupProducts.length > 0) {
-      data.groupProducts.map(async (groupProductId) => {
+      for (const groupProductId of data.groupProducts) {
         let groupProductData = {
           product: { connect: { id: Number(product.id) } },
           childProduct: { connect: { id: Number(groupProductId) } },
         };
         await productRepository.createGroupedProduct(groupProductData);
-      });
+      }
+      // data.groupProducts.map(async (groupProductId) => {
+      //   let groupProductData = {
+      //     product: { connect: { id: Number(product.id) } },
+      //     childProduct: { connect: { id: Number(groupProductId) } },
+      //   };
+      //   await productRepository.createGroupedProduct(groupProductData);
+      // });
     }
 
-    if (data.attributes) {
+    if (data.attributes && Object.keys(data.attributes).length > 0) {
       Object.entries(data.attributes).forEach(
         async ([key, attributeValues]) => {
           const attributeData = {
@@ -286,13 +338,20 @@ exports.createNewProduct = async (vendorId, data) => {
           const newAttribute = await productRepository.addProductAttribute(
             attributeData
           );
-          attributeValues.values?.map(async (attributeName) => {
+          for (const attributeName of attributeValues.values) {
             const attributeValueData = {
               attribute: { connect: { id: Number(newAttribute.id) } },
               value: attributeName,
             };
             await productRepository.addAttributeValue(attributeValueData);
-          });
+          }
+          // attributeValues.values?.map(async (attributeName) => {
+          //   const attributeValueData = {
+          //     attribute: { connect: { id: Number(newAttribute.id) } },
+          //     value: attributeName,
+          //   };
+          //   await productRepository.addAttributeValue(attributeValueData);
+          // });
         }
       );
     }
@@ -302,3 +361,34 @@ exports.createNewProduct = async (vendorId, data) => {
     throw error;
   }
 };
+
+
+exports.getAllProductTags = async (pageNumber) => {
+  try {
+    const page = pageNumber || 1;
+    const limit = 4;
+
+    return await productRepository.getProductTags(
+      page,
+      limit
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.findProductTags = async (data) => {
+  try {
+    return await productRepository.searchTags(data.keyword)
+  } catch (error) {
+    throw error;
+  }
+}
+
+exports.getProdoucts = async (id) => {
+  try {
+    return await productRepository.getProductsByVendor(id);
+  } catch (error) {
+    throw error;
+  }
+}

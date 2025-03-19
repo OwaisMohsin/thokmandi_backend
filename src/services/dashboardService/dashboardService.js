@@ -13,7 +13,7 @@ exports.fetchDashboardData = async (req, res) => {
     const buyers = allUsers.filter((user) => user.role === Role.BUYER);
     // console.log("All users are", buyers);
     const vendors = allUsers.filter((user) => user.role === Role.VENDOR);
-    const products = await dashboardRepository.getAllProductsCount();
+    const products = await dashboardRepository.getAllProducts();
 
     // console.log(buyers, vendors, products);
 

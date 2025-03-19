@@ -20,6 +20,7 @@ const manageUsers = require('../routes/adminRoutes/userRoutes');
 const careerRoutes = require('../routes/adminRoutes/careerRoutes');
 const vendorCouponRoutes = require('../routes/vendorRoutes/couponRoutes');
 const dashboardRoutes = require('../routes/adminRoutes/dashboardRoutes');
+const vendorAnnoucementRoutes = require('../routes/vendorRoutes/annoucementRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -47,6 +48,7 @@ router.use(dashboardRoutes);
 router.use(vendorSideOrders);
 router.use(vendorRoutes);
 router.use(vendorCouponRoutes);
+// router.use(vendorAnnoucementRoutes)
 
 //GENERIC ROUTES
 router.use(authRoutes);

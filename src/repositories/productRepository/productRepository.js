@@ -12,7 +12,7 @@ exports.getAllProducts = async (page, limit) => {
         image: true,
       },
     }),
-    prisma.product.count(), // ✅ Get total count in the same transaction
+    prisma.product.count(),
   ]);
 
   return { products, totalCount };
@@ -29,10 +29,10 @@ exports.findProductById = async (id) => {
           values: true,
         },
       },
-      ProductTags:{
-        include:{
-          tag:true
-        }
+      ProductTags: {
+        include: {
+          tag: true,
+        },
       },
       productCategories: {
         include: {
@@ -68,6 +68,36 @@ exports.getProductsByCategory = async (categoryId, page, limit) => {
 
   return { products, totalCount };
 };
+
+exports.getProductTags = async (page, limit) => {
+  return await prisma.tag.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+};
+
+exports.searchTags = async (keyword) => {
+  return await prisma.tag.findMany({
+    where: {
+      name: {
+        contains: keyword,
+        mode:"insensitive"
+      },
+    },
+    orderBy:{
+      name:"asc"
+    }
+  });
+};
+
+
+exports.getProductsByVendor = async (id) => {
+  return await prisma.product.findMany({
+    where:{
+      vendorId:Number(id)
+    }
+  })
+}
 
 exports.createProduct = async (data) => {
   return await prisma.product.create({

@@ -10,6 +10,10 @@ exports.getAllUsers = async () => {
 };
 
 
-exports.getAllProductsCount = async () => {
-    return await prisma.product.count();
+exports.getAllProducts = async () => {
+    return await prisma.product.findMany({
+      select:{
+        createdAt:true
+      }
+    });
 }

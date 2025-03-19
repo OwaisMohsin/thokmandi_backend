@@ -211,17 +211,17 @@ model Product {
   buttonText         String?
   price              Decimal       @default(0.0) @db.Decimal(10, 2)
   discountedPrice    Decimal?      @default(0.0) @db.Decimal(10, 2)
-  from               DateTime?     
+  from               DateTime?
   to                 DateTime?
   shortDescription   String?
   image              String?
   description        String
   sku                String
-  stockStatus        StockStatus?   @default(IN_STOCK)
+  stockStatus        StockStatus?  @default(IN_STOCK)
   stockManagement    Boolean       @default(false)
   stockQuantity      Int?
   lowStockThreshold  Int?
-  backOrder          BackOrder?     @default(DO_NOT_ALLOW)
+  backOrder          BackOrder?    @default(DO_NOT_ALLOW)
   limitOnePerOrder   Boolean       @default(false)
   shippingRequired   Boolean       @default(false)
   weight             Decimal?      @default(0.0) @db.Decimal(10, 2)
@@ -462,23 +462,22 @@ model Application {
 }
 
 model VendorCoupon {
-  id            Int          @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   couponCode    String
-  discountValue Decimal      @db.Decimal(10, 2)
+  discountValue Decimal       @db.Decimal(10, 2)
   discountType  String
   expiry        DateTime
-  couponStatus  CouponStatus @default(ACTIVE)
-  minPurchase   Decimal      @db.Decimal(10,2)
+  couponStatus  CouponStatus  @default(ACTIVE)
+  minPurchase   Decimal       @db.Decimal(10, 2)
   maxUsage      Int
   description   String?
-  isActive      Boolean      @default(true)
+  isActive      Boolean       @default(true)
   vendorId      Int
-  vendor        User         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
-  userCoupons User_Coupon[]
+  vendor        User          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  userCoupons   User_Coupon[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
 
 model User_Coupon {
@@ -487,6 +486,15 @@ model User_Coupon {
   couponId Int
   user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   coupon   VendorCoupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+}
+
+model Annoucement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdBy Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Country {
