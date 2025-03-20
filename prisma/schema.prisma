@@ -143,6 +143,7 @@ model User {
   userCoupons   User_Coupon[]
   vendorCoupons VendorCoupon[]
   products      Product[]
+  announcements  Announcement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -488,11 +489,13 @@ model User_Coupon {
   coupon   VendorCoupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
 }
 
-model Annoucement {
+model Announcement {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
-  createdBy Role
+  createdBy Role     @default(VENDOR)
+  vendorId  Int
+  vendor    User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
