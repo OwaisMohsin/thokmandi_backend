@@ -50,15 +50,12 @@ exports.deleteSingleJob = async (id) => {
 };
 
 exports.applyForVacancy = async (data) => {
-  console.log("Payload is", data);
-  
   const updatedData = {
     ...data,
     job: { connect: { id: Number(data.jobId) } },
   };
   delete updatedData.jobId;
-  console.log("updated us ", updatedData);
-  
+
   const job = await careerRepository.getJobById(data.jobId);
   if (!job) {
     throw new AppError("No job found with provided ID", 404);

@@ -121,29 +121,33 @@ enum CouponStatus {
 }
 
 model User {
-  id                 Int           @id @default(autoincrement())
+  id                 Int     @id @default(autoincrement())
   name               String?
   firstName          String?
   lastName           String?
-  email              String        @unique
+  email              String  @unique
   password           String
-  phoneNumber        String?       @unique
-  role               Role          @default(BUYER)
+  phoneNumber        String  @unique
+  role               Role    @default(BUYER)
   verificationToken  String?
-  isVerified         Boolean       @default(false)
-  isActive           Boolean       @default(true)
-  isApprovalRequired Boolean       @default(false)
+  isVerified         Boolean @default(false)
+  isActive           Boolean @default(true)
+  isApprovalRequired Boolean @default(false)
   userName           String?
-  address            Address[]
-  cart               Cart?
-  store              Store?
-  order              Order[]
-  vendorOrder        VendorOrder[]
+  companyName        String?
+  shopType           String?
+  brandType          String?
+  openingDate        String?
 
+  address       Address[]
+  cart          Cart?
+  store         Store?
+  order         Order[]
+  vendorOrder   VendorOrder[]
   userCoupons   User_Coupon[]
   vendorCoupons VendorCoupon[]
   products      Product[]
-  announcements  Announcement[]
+  announcements Announcement[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -170,21 +174,25 @@ model Address {
 }
 
 model Store {
-  id          Int      @id @default(autoincrement())
-  storeName   String
-  storeUrl    String?
-  storeStatus String   @default("pending")
-  vendorId    Int      @unique
-  user        User     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  country     String?
-  apartment   String?
+  id          Int     @id @default(autoincrement())
+  shopName    String
+  websiteUrl  String?
   street      String?
+  apartment   String?
+  city        String
+  zipCode     String
+  country     String
   state       String?
-  city        String?
-  zipCode     String?
-  province    String?
+  companyName String?
+  comapnyId   String?
+  taxNumber   String
   phoneNumber String?
+  storeStatus String  @default("pending")
+  vendorId    Int     @unique
+  user        User    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
@@ -391,7 +399,7 @@ model Order {
   status      OrderStatus @default(PENDING)
   notes       String?
   userId      Int
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 

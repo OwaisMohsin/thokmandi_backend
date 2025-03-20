@@ -2,6 +2,8 @@ const vendorCouponRepository = require("../../repositories/vendorCouponRepositor
 const userRepository = require("../../repositories/UserRepository/userRepository");
 const AppError = require("../../utils/AppError");
 const { Role } = require("@prisma/client");
+
+
 exports.createNewCoupon = async (vendor, data) => {
   const vendorId = vendor.id;
   if (vendor.role !== Role.VENDOR) {

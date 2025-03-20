@@ -8,7 +8,7 @@ const crypto = require("crypto");
 
 exports.registerUser = async (data, req) => {
   try {
-    const { firstName, lastName, email, password } = data;
+    const { firstName, lastName, email, password, phoneNumber } = data;
     const userFound = await userRepositoy.findUserByEmail(email);
     if (userFound) {
       throw new AppError("Email already in use", 409);
@@ -19,6 +19,7 @@ exports.registerUser = async (data, req) => {
       firstName,
       lastName,
       email,
+      phoneNumber,
       password: hashedPassword,
     };
 
