@@ -20,7 +20,7 @@ exports.registerVendor = async (data, req) => {
     state,
     country,
     companyName,
-    companyId,
+    comapnyId,
     taxNumber,
   } = data;
 
@@ -43,7 +43,7 @@ exports.registerVendor = async (data, req) => {
       country,
       state,
       companyName,
-      companyId,
+      comapnyId,
       taxNumber,
       user: { connect: { id: user.id } },
     };

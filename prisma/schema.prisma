@@ -184,7 +184,7 @@ model Store {
   country     String
   state       String?
   companyName String?
-  companyId   String?
+  comapnyId   String?
   taxNumber   String
   phoneNumber String?
   storeStatus String  @default("pending")
