@@ -1,4 +1,4 @@
-const userRepositoy = require("../../repositories/UserRepository/userRepository");
+const userRepository = require("../../repositories/UserRepository/userRepository");
 const sendEmail = require("../../utils/email");
 const { createToken } = require("../../utils/createJwtToken");
 const { generateRandomToken } = require("../../utils/generateRandomToken");
@@ -9,7 +9,7 @@ const crypto = require("crypto");
 exports.registerUser = async (data, req) => {
   try {
     const { firstName, lastName, email, password, phoneNumber } = data;
-    const userFound = await userRepositoy.findUserByEmail(email);
+    const userFound = await userRepository.findUserByEmail(email);
     if (userFound) {
       throw new AppError("Email already in use", 409);
     }
@@ -23,17 +23,17 @@ exports.registerUser = async (data, req) => {
       password: hashedPassword,
     };
 
-    const user = await userRepositoy.createUser(userData);
+    const user = await userRepository.createUser(userData);
 
     // Generate verification token
     const verificationToken = await generateRandomToken();
-    await userRepositoy.updateUserById(user.id, {
+    await userRepository.updateUserById(user.id, {
       verificationToken: verificationToken.hashedToken,
     });
 
     // const baseUrl = `${req.protocol}://${req.get("host")}`;
     // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}`;
-    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+    const verificationUrl = `https://thokmandi-web-au1x.vercel.app/verify-account/${verificationToken.plainToken}`;
 
     const subject = "Account Verification";
     const message = `
@@ -63,7 +63,7 @@ exports.loginUser = async (data) => {
   try {
     const { email, password } = data;
 
-    const user = await userRepositoy.findUserByEmail(email);
+    const user = await userRepository.findUserByEmail(email);
     if (!user) {
       throw new AppError("No user found with provided EMAIL", 404);
     }
@@ -99,18 +99,18 @@ exports.verifyUser = async (plainToken, requestType) => {
     .update(plainToken)
     .digest("hex");
 
-  const userFound = await userRepositoy.findUserByHashedToken(hashedToken);
+  const userFound = await userRepository.findUserByHashedToken(hashedToken);
 
   if (!userFound) {
     throw new AppError("No user found with provided token", 404);
   }
 
-  await userRepositoy.updateUserById(userFound.id, {
+  await userRepository.updateUserById(userFound.id, {
     isVerified: true,
     verificationToken: null,
   });
 
-  const user = await userRepositoy.findUserByEmail(userFound.email);
+  const user = await userRepository.findUserByEmail(userFound.email);
 
   if (requestType !== "forgot-password") {
     const token = createToken(user.id);
@@ -125,19 +125,19 @@ exports.resendLink = async (data, requestType) => {
   console.log(requestType);
 
   try {
-    const user = await userRepositoy.findUserByEmail(data.email);
+    const user = await userRepository.findUserByEmail(data.email);
     if (!user) {
       throw new AppError("No user found with provided EMAIL", 404);
     }
     const verificationToken = await generateRandomToken();
-    await userRepositoy.updateUserById(user.id, {
+    await userRepository.updateUserById(user.id, {
       verificationToken: verificationToken.hashedToken,
     });
-    let verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+    let verificationUrl = `https://thokmandi-web-au1x.vercel.app/verify-account/${verificationToken.plainToken}`;
     let subject = "";
     let message = "";
     if (requestType === "forgot-password") {
-      verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
+      verificationUrl = `https://thokmandi-web-au1x.vercel.app/verify-account/${verificationToken.plainToken}?type=forgot-password`;
       subject = "Password Reset";
       message = `
       <p>Welcome!</p>
@@ -148,9 +148,9 @@ exports.resendLink = async (data, requestType) => {
     
       `;
     } else {
-      verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+      verificationUrl = `https://thokmandi-web-au1x.vercel.app/verify-account/${verificationToken.plainToken}`;
 
-      subject = "Acount Verificiation";
+      subject = "Account Verification";
       message = `
         <p>Welcome!</p>
         <p>Please verify your account by clicking the link below:</p>
@@ -174,20 +174,20 @@ exports.userForgotPassword = async (data, req) => {
   try {
     const email = data.email;
 
-    const user = await userRepositoy.findUserByEmail(email);
+    const user = await userRepository.findUserByEmail(email);
     if (!user) {
       throw new AppError("User not found", 404);
     }
 
     const verificationToken = await generateRandomToken();
-    await userRepositoy.updateUserById(user.id, {
+    await userRepository.updateUserById(user.id, {
       verificationToken: verificationToken.hashedToken,
     });
 
     // const baseUrl = `${req.protocol}://${req.get("host")}`;
     // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}?type=forgot-password`;
 
-    const verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
+    const verificationUrl = `https://thokmandi-web-au1x.vercel.app/verify-account/${verificationToken.plainToken}?type=forgot-password`;
 
     const subject = "Password Reset";
     const message = `
@@ -211,13 +211,13 @@ exports.userForgotPassword = async (data, req) => {
 exports.userResetPassword = async (data) => {
   try {
     const { email, password } = data;
-    const user = await userRepositoy.findUserByEmail(email);
+    const user = await userRepository.findUserByEmail(email);
     if (!user) {
       throw new AppError("User not found", 404);
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    await userRepositoy.updateUserById(user.id, {
+    await userRepository.updateUserById(user.id, {
       password: hashedPassword,
       verificationToken: null,
     });
