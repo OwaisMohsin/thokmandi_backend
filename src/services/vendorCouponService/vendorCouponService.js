@@ -48,6 +48,11 @@ exports.updateSingleCoupon = async (vendorId, couponId, data) => {
       throw new AppError("You dont have permission to update this", 403);
     }
 
+    const couponData = {
+      ...data,
+      ...(data.couponStatus)
+    }
+
     return await vendorCouponRepository.updateCouponById(couponId, data);
   } catch (error) {
     throw error;

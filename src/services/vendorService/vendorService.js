@@ -4,7 +4,7 @@ const vendorRepository = require("../../repositories/vendorRepository/vendorRepo
 const authService = require("../authService/authService");
 const AppError = require("../../utils/AppError");
 
-exports.registerVendor = async (data,req) => {
+exports.registerVendor = async (data, req) => {
   const {
     firstName,
     lastName,
@@ -12,48 +12,50 @@ exports.registerVendor = async (data,req) => {
     phoneNumber,
     password,
     shopName,
-    storeUrl,
+    websiteUrl,
     street,
     apartment,
     city,
     zipCode,
     state,
     country,
-    province,
-    storePhoneNumber,
+    companyName,
+    companyId,
+    taxNumber,
   } = data;
 
-  const userData = { firstName, lastName, email, password };
-  const address = {
-    street,
-    state,
-    apartment,
-    city,
-    zipCode,
-    country,
-    province,
-  };
+  const userData = { firstName, lastName, email, password, phoneNumber };
 
   try {
     let user = await userRepository.findUserByEmail(email);
 
     if (!user) {
-      user = await authService.registerUser(userData,req);
+      user = await authService.registerUser(userData, req);
     }
 
     const storeData = {
-      ...address,
-      storeName: shopName,
-      storeUrl,
-      phoneNumber,
+      shopName,
+      websiteUrl,
+      street,
+      apartment,
+      city,
+      zipCode,
+      country,
+      state,
+      companyName,
+      companyId,
+      taxNumber,
       user: { connect: { id: user.id } },
     };
 
     const store = await vendorRepository.createStore(storeData);
 
     const admin = await userRepository.getUserByRole(Role.ADMIN);
-    if(!admin){
-      throw new AppError("There is no admin os system",404);
+    if (!admin) {
+      throw new AppError(
+        "There is no admin to verify your request, add ADMIN first",
+        404
+      );
     }
     if (!admin.isApprovalRequired) {
       await userRepository.updateUserById(user.id, { role: Role.VENDOR });
@@ -63,7 +65,8 @@ exports.registerVendor = async (data,req) => {
     }
 
     const result = await userRepository.findUserById(user.id);
-    return result;
+    const { password: _, ...safeUser } = { ...result};
+    return safeUser;
   } catch (error) {
     throw error;
   }

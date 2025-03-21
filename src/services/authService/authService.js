@@ -50,8 +50,11 @@ exports.registerUser = async (data, req) => {
       verificationToken: verificationToken.plainToken,
     });
 
-    return;
+    const token = createToken(user.id);
+
+    return {...user,token};
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };
