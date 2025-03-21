@@ -6,11 +6,11 @@ const {
 const subAdminService = require("../../services/subAdminService/subAdminService");
 
 exports.addSubAdmin = asyncHandler(async (req, res) => {
-  validateSubAdminData(req.body);
+  // validateSubAdminData(req.body);
   const subAdmin = await subAdminService.createSubAdmin(req.body);
   return res.status(201).json({
     status: true,
-    message: "Sub amdin created successfully",
+    message: "Sub admin created successfully",
     data: { subAdmin },
   });
 });
