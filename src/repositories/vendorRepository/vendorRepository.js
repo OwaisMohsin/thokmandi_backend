@@ -6,6 +6,18 @@ exports.createStore = async (data) => {
   });
 };
 
+
+exports.findVendorById = async (id) => {
+  return prisma.user.findUnique({
+    where:{
+      id:Number(id)
+    },
+    include:{
+      store:true
+    }
+  })
+}
+
 exports.getStoreById = async (id) => {
   return await prisma.store.findUnique({
     where: {

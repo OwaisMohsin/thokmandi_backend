@@ -4,12 +4,14 @@ const orderService = require("../../services/orderService/orderService");
 exports.createUserOrder = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const data = req.body;
-  const order =  await orderService.createOrder(userId, data);
-  return res.status(201).json({
-    status: true,
-    message: "order created successfully",
-    data: { order },
-  });
+  console.log("User id is", userId, "and cart data is", data);
+  
+  // const order =  await orderService.createOrder(userId, data);
+  // return res.status(201).json({
+  //   status: true,
+  //   message: "order created successfully",
+  //   data: { order },
+  // });
 });
 
 exports.getAllOrders = asyncHandler(async (req, res) => {

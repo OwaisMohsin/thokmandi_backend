@@ -39,6 +39,15 @@ exports.findProductById = async (id) => {
           category: true,
         },
       },
+      vendor:{
+        select:{
+          store:{
+            select:{
+              shopName:true
+            }
+          }
+        }
+      }
     },
   });
 };

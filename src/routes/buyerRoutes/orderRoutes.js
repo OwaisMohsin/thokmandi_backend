@@ -9,7 +9,7 @@ const {createUserOrder,getAllOrders,getSingleOrder} = require('../../controllers
 const router = express.Router();
 
 router
-    .route('/user/order/create')
+    .route('/user/order')
     .post(checkRequest,createUserOrder)
 
 router

@@ -42,7 +42,7 @@ exports.getSingleProduct = asyncHandler(async (req, res) => {
   const product = await productService.getProductById(productId);
   return res.status(200).json({
     status: true,
-    message: "Prouct fetched successfully",
+    message: "Product fetched successfully",
     data: { product },
   });
 });

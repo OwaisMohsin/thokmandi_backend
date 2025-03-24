@@ -65,7 +65,7 @@ exports.registerVendor = async (data, req) => {
     }
 
     const result = await userRepository.findUserById(user.id);
-    const { password: _, ...safeUser } = { ...result};
+    const { password: _, ...safeUser } = { ...result };
     return safeUser;
   } catch (error) {
     throw error;
@@ -95,6 +95,18 @@ exports.changeRequestStatus = async (id, data) => {
       await userRepository.updateUserById(store.vendorId, { role: Role.BUYER });
     }
     return await vendorRepository.updateStoreStatus(id, data);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.fetchVendorById = async (vendorId) => {
+  try {
+    const vendor = await vendorRepository.findVendorById(vendorId);
+    if (!vendor) {
+      throw new AppError("No vendor found with provided ID", 404);
+    }
+    return vendor;
   } catch (error) {
     throw error;
   }
