@@ -39,15 +39,26 @@ exports.findProductById = async (id) => {
           category: true,
         },
       },
-      vendor:{
-        select:{
-          store:{
-            select:{
-              shopName:true
-            }
-          }
-        }
-      }
+      vendor: {
+        select: {
+          store: {
+            select: {
+              shopName: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+exports.checkPurchaseLimit = async (id) => {
+  return prisma.product.findUnique({
+    where: {
+      id: Number(id),
+    },
+    select: {
+      limitOnePerOrder: true,
     },
   });
 };
@@ -90,23 +101,22 @@ exports.searchTags = async (keyword) => {
     where: {
       name: {
         contains: keyword,
-        mode:"insensitive"
+        mode: "insensitive",
       },
     },
-    orderBy:{
-      name:"asc"
-    }
+    orderBy: {
+      name: "asc",
+    },
   });
 };
 
-
 exports.getProductsByVendor = async (id) => {
   return await prisma.product.findMany({
-    where:{
-      vendorId:Number(id)
-    }
-  })
-}
+    where: {
+      vendorId: Number(id),
+    },
+  });
+};
 
 exports.createProduct = async (data) => {
   return await prisma.product.create({

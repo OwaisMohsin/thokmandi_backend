@@ -15,12 +15,16 @@ exports.getUserCart = async (userId) => {
     },
     include: {
       items: {
-        include: {
+        select: {
+          id:true,
+          productId: true,
+          quantity: true,
+          price: true,
           product: {
             select: {
               image: true,
               title: true,
-              vendorId:true
+              vendorId: true,
             },
           },
         },
@@ -40,6 +44,14 @@ exports.createCart = async (userId) => {
 exports.addCartItem = async (data) => {
   return await prisma.cartItem.create({ data });
 };
+
+exports.getCartItemById = async (id) => {
+  return await prisma.cartItem.findUnique({
+    where:{
+      id:Number(id)
+    }
+  })
+}
 
 exports.deleteCartItem = async (id) => {
   return await prisma.cartItem.delete({

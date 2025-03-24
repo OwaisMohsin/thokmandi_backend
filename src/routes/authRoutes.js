@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../middlewares/requestFilter');
-const {register,verify, login,forgotPassword,resetPassword,resendVerficationLink} = require('../controllers/authController');
+const {register,verify, login,forgotPassword,resetPassword,resendVerificationLink} = require('../controllers/authController');
 const { addCountry,getCountries } = require('../controllers/countryController');
 
 // variable initializations
@@ -23,7 +23,7 @@ router
     
 router
     .route('/auth/resend-link')
-    .post(resendVerficationLink);    
+    .post(resendVerificationLink);    
   
 
 router

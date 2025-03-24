@@ -59,13 +59,11 @@ exports.deleteCartItem = asyncHandler(async (req, res) => {
   });
 });
 
-
-exports.deleteAllItems = asyncHandler(async (req,res) => {
+exports.deleteAllItems = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   await cartService.removeAllItems(userId);
   return res.status(200).json({
     status: true,
     message: "Cart Items deleted successfully",
   });
-
-})
+});

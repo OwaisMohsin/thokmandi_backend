@@ -33,8 +33,10 @@ exports.getAllVendorOrders = async (vendorId) => {
           quantity: true,
           product: {
             select: {
+              title:true,
               price: true,
               image: true,
+              
             },
           },
         },

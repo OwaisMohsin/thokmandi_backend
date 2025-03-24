@@ -100,7 +100,7 @@ exports.fetchAllVendorOrders = async (vendor) => {
   try {
     if (vendor.role === Role.BUYER) {
       throw new AppError(
-        "You done have permissions to access vendor orders",
+        "You don't have permissions to access vendor orders",
         403
       );
     }

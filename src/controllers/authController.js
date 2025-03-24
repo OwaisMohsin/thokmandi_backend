@@ -39,7 +39,7 @@ exports.verify = asyncHandler(async (req, res) => {
   });
 });
 
-exports.resendVerficationLink = asyncHandler(async (req, res) => {
+exports.resendVerificationLink = asyncHandler(async (req, res) => {
   const data = req.body;
   const requestType = req.query.type;
 
