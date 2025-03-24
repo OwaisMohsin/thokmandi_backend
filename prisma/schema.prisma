@@ -421,6 +421,7 @@ model OrderItem {
 
 model VendorOrder {
   id       Int               @id @default(autoincrement())
+  orderNumber String @unique
   orderId  Int // Reference to the main order
   order    Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
   vendorId Int // Reference to the vendor

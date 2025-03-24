@@ -20,6 +20,7 @@ exports.getUserCart = async (userId) => {
             select: {
               image: true,
               title: true,
+              vendorId:true
             },
           },
         },
