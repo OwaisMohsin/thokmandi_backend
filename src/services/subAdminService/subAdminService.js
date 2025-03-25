@@ -5,8 +5,8 @@ const bcrypt = require("bcryptjs");
 exports.createSubAdmin = async (data) => {
   try {
     const subAdmin = await subAdminRepository.getSubAdminByEmail(data.email);
-    if(subAdmin){
-      throw new AppError("Email already in use",409);
+    if (subAdmin) {
+      throw new AppError("Email already in use", 409);
     }
     const { password } = data;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -17,14 +17,23 @@ exports.createSubAdmin = async (data) => {
   }
 };
 
-exports.getAllSubAdmins = async (req, res) => {
+exports.getAllSubAdmins = async (page, limit) => {
   try {
-    const subAdmins = await subAdminRepository.getAllSubAdmins();
+    const skip = (page - 1) * limit;
+    const subAdmins = await subAdminRepository.getAllSubAdmins(skip, limit);
     return subAdmins;
   } catch (error) {
     throw error;
   }
 };
+
+exports.fetchSubAdminsCount = async () => {
+  try {
+    return await subAdminRepository.countSubAdmins();
+  } catch (error) {
+    throw error;
+  }
+}
 
 exports.updateSubAdmin = async (id, data) => {
   try {

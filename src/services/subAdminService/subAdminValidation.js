@@ -25,7 +25,7 @@ const subAdminSchema = z.object({
 
   phoneNumber: z
     .string()
-    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (must be in E.164 format)")
+    // .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format (must be in E.164 format)")
     .optional()
 });
 

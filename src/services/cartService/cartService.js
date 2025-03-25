@@ -12,25 +12,20 @@ exports.fetchUserCart = async (userId) => {
 
 exports.addItemToCart = async (userId, item) => {
   try {
-    // Get or create cart
     let cart = await cartRepository.getCartByUserId(userId);
     if (!cart) {
       cart = await cartRepository.createCart(userId);
     }
 
-    // First, get product details to check for purchase limit
     const product = await productRepository.findProductById(item.productId);
     if (!product) {
       throw new AppError("Product not found", 404);
     }
 
-    // Check if product is already in cart
     const productAlreadyInCart =
       await cartRepository.getCartItemByUserAndProduct(cart.id, item.productId);
 
-    // Handle product with purchase limit
     if (product.limitOnePerOrder) {
-      // If trying to add more than 1 quantity
       if (item.quantity > 1) {
         throw new AppError(
           "This product is limited to one per order by the vendor",
@@ -38,7 +33,6 @@ exports.addItemToCart = async (userId, item) => {
         );
       }
 
-      // If product already exists in cart
       if (productAlreadyInCart) {
         throw new AppError(
           "This product is already in your cart and is limited to one per order",
@@ -47,7 +41,6 @@ exports.addItemToCart = async (userId, item) => {
       }
     }
 
-    // If product is already in cart, update quantity
     if (productAlreadyInCart) {
       return await cartRepository.updateCartItem(
         productAlreadyInCart.id,
@@ -55,7 +48,6 @@ exports.addItemToCart = async (userId, item) => {
       );
     }
 
-    // Add new item to cart
     const updatedData = {
       price: parseFloat(item.price).toFixed(2),
       quantity: Number(item.quantity),

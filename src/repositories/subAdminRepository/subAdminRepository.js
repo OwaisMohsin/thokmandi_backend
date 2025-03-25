@@ -7,8 +7,18 @@ exports.createSubAdmin = async (data) => {
   });
 };
 
-exports.getAllSubAdmins = async () => {
+exports.getAllSubAdmins = async (skip, limit) => {
   return await prisma.user.findMany({
+    where: {
+      role: Role.SUB_ADMIN,
+    },
+    skip,
+    take: limit,
+  });
+};
+
+exports.countSubAdmins = async () => {
+  return await prisma.user.count({
     where: {
       role: Role.SUB_ADMIN,
     },
@@ -34,7 +44,7 @@ exports.getSubAdminByEmail = async (email) => {
 exports.updateSubAdmin = async (id, data) => {
   return await prisma.user.update({
     where: {
-      id:Number(id)
+      id: Number(id),
     },
     data,
   });

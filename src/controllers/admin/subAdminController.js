@@ -16,8 +16,12 @@ exports.addSubAdmin = asyncHandler(async (req, res) => {
 });
 
 exports.getSubAdmins = asyncHandler(async (req, res) => {
-  const subAdmins = await subAdminService.getAllSubAdmins();
-  if(subAdmins && subAdmins.length > 0){
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const subAdmins = await subAdminService.getAllSubAdmins(page, limit);
+
+  if (subAdmins && subAdmins.length > 0) {
     return res.status(200).json({
       status: true,
       message: "Sub admins fetch successfully",
@@ -27,14 +31,26 @@ exports.getSubAdmins = asyncHandler(async (req, res) => {
   return res.status(200).json({
     status: true,
     message: "No sub admin found",
-    data: { subAdmins:[] },
+    data: { subAdmins: [] },
+  });
+});
+
+exports.getSubAdminsCount = asyncHandler(async (req, res) => {
+  const count = await subAdminService.fetchSubAdminsCount();
+  return res.status(200).json({
+    status: true,
+    message: "Total count fetched successfully",
+    data: { count },
   });
 });
 
 exports.updateSubAdmin = asyncHandler(async (req, res) => {
-  const id = req.params.subAdminId
-  
-  const updatedSubAdmin = await subAdminService.updateSubAdmin(id, req.body.data);
+  const id = req.params.subAdminId;
+
+  const updatedSubAdmin = await subAdminService.updateSubAdmin(
+    id,
+    req.body.data
+  );
   return res.status(200).json({
     status: true,
     message: "Sub admin updated successfully",
