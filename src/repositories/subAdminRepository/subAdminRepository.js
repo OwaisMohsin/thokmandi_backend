@@ -33,10 +33,26 @@ exports.getSubAdminById = async (id) => {
   });
 };
 
-exports.getSubAdminByEmail = async (email) => {
-  return await prisma.user.findUnique({
+exports.getSubAdminByEmail = async (keyword) => {
+  return await prisma.user.findMany({
     where: {
-      email,
+      AND: [
+        {
+          email: {
+            contains: keyword,
+            mode: "insensitive",
+          },
+        },
+        { role: Role.SUB_ADMIN },
+      ],
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      isActive: true,
+      email: true,
+      role:true
     },
   });
 };

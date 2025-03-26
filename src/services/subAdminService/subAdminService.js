@@ -33,7 +33,15 @@ exports.fetchSubAdminsCount = async () => {
   } catch (error) {
     throw error;
   }
-}
+};
+
+exports.searchSubAdminByEmail = async (data) => {
+  try {
+    return await subAdminRepository.getSubAdminByEmail(data.keyword);
+  } catch (error) {
+    throw error;
+  }
+};
 
 exports.updateSubAdmin = async (id, data) => {
   try {

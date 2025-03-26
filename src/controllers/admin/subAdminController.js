@@ -44,6 +44,23 @@ exports.getSubAdminsCount = asyncHandler(async (req, res) => {
   });
 });
 
+exports.searchSubAdmin = asyncHandler(async (req, res) => {
+  const data = req.body;
+  const subAdmin = await subAdminService.searchSubAdminByEmail(data);
+  if (subAdmin && subAdmin.length > 0) {
+    return res.status(200).json({
+      status: true,
+      message: "Sub admin fetch successfully",
+      data: { subAdmin },
+    });
+  }
+  return res.status(200).json({
+    status: true,
+    message: "No sub admin found",
+    data: { subAdmin: [] },
+  });
+});
+
 exports.updateSubAdmin = asyncHandler(async (req, res) => {
   const id = req.params.subAdminId;
 

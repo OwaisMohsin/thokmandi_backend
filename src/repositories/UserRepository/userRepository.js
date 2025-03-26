@@ -23,6 +23,30 @@ exports.findUserByEmail = async (email) => {
   });
 };
 
+exports.getBuyerByEmail = async (keyword) => {
+  return await prisma.user.findMany({
+    where: {
+      AND: [
+        {
+          email: {
+            contains: keyword,
+            mode: "insensitive",
+          },
+        },
+        { role: Role.BUYER },
+      ],
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      phoneNumber: true,
+      isActive: true,
+      email: true,
+      role: true,
+    },
+  });
+};
+
 exports.findUserByHashedToken = async (hashedToken) => {
   return prisma.user.findFirst({
     where: {
@@ -56,12 +80,12 @@ exports.getUserByRole = async (role) => {
 
 exports.getVendorbyId = async (id) => {
   return await prisma.user.findFirst({
-    where:{
-      id:Number(id),
-      role:Role.VENDOR
+    where: {
+      id: Number(id),
+      role: Role.VENDOR,
     },
-  })
-}
+  });
+};
 
 exports.addUserAddress = async (data) => {
   return await prisma.address.create({
@@ -103,12 +127,22 @@ exports.changeApprovalStatus = async (id, data) => {
   });
 };
 
-exports.fetchAllBuyers = async () => {
+exports.fetchAllBuyers = async (skip, limit) => {
   return await prisma.user.findMany({
     where: {
       role: Role.BUYER,
     },
+    skip,
+    take: limit,
     orderBy: { createdAt: "desc" },
+  });
+};
+
+exports.countBuyers = async () => {
+  return await prisma.user.count({
+    where: {
+      role: Role.BUYER,
+    },
   });
 };
 

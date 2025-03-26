@@ -33,10 +33,9 @@ exports.getAllVendorOrders = async (vendorId) => {
           quantity: true,
           product: {
             select: {
-              title:true,
+              title: true,
               price: true,
               image: true,
-              
             },
           },
         },
@@ -88,6 +87,11 @@ exports.getAllOrdersByUserId = async (userId) => {
               description: true,
             },
           },
+        },
+      },
+      user: {
+        select: {
+          address: true,
         },
       },
     },

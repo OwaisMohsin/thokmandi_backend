@@ -1,6 +1,6 @@
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {fetchAllBuyers,toggelProfileStatus,deleteUser} = require('../../controllers/admin/userController');
+const {fetchAllBuyers,getBuyersCount,searchBuyer,toggleProfileStatus,deleteUser} = require('../../controllers/admin/userController');
 
 
 // variable initializations
@@ -12,8 +12,16 @@ router
     .get(checkRequest,fetchAllBuyers);
 
 router
+    .route('/user/buyers/count')
+    .get(checkRequest,getBuyersCount);   
+    
+router
+    .route('/user/buyer/search')
+    .post(checkRequest,searchBuyer)    
+
+router
     .route('/user/toggle-status/:userId')
-    .patch(checkRequest,toggelProfileStatus);
+    .patch(checkRequest,toggleProfileStatus);
     
 router
     .route('/user/delete/:userId')

@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {addSubAdmin, getSubAdmins,getSubAdminsCount, updateSubAdmin, deleteSubAdmin} = require('../../controllers/admin/subAdminController');
+const {addSubAdmin, getSubAdmins,getSubAdminsCount, updateSubAdmin,searchSubAdmin, deleteSubAdmin} = require('../../controllers/admin/subAdminController');
 
 
 
@@ -15,7 +15,11 @@ router
 
 router
     .route('/sub-admin/count')
-    .get(checkRequest,getSubAdminsCount);    
+    .get(checkRequest,getSubAdminsCount); 
+
+router
+    .route('/sub-admin/search')
+    .post(checkRequest,searchSubAdmin);
     
 
 router

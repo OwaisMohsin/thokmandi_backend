@@ -62,7 +62,6 @@ exports.getUserAddresses = async (id) => {
 
 exports.editUserAddress = async (userId, addressId, data) => {
   try {
-
     const address = await userRepository.getAddressById(addressId);
     if (!address) {
       throw new AppError("No address found with provided id", 404);
@@ -94,15 +93,30 @@ exports.updateRequestApprovalStatus = async (id, data) => {
   }
 };
 
-
-exports.getAllBuyers = async () => {
+exports.getAllBuyers = async (page, limit) => {
   try {
-    return await userRepository.fetchAllBuyers();
+    const skip = (page - 1) * limit;
+    return await userRepository.fetchAllBuyers(skip, limit);
   } catch (error) {
     throw error;
   }
-}
+};
 
+exports.searchBuyerByEmail = async (data) => {
+  try {
+    return await userRepository.getBuyerByEmail(data.keyword);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.fetchBuyersCount = async () => {
+  try {
+    return await userRepository.countBuyers();
+  } catch (error) {
+    throw error;
+  }
+};
 
 exports.deleteUser = async (id) => {
   try {
@@ -110,4 +124,4 @@ exports.deleteUser = async (id) => {
   } catch (error) {
     throw error;
   }
-}
+};
