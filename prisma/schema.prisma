@@ -149,8 +149,9 @@ model User {
   products      Product[]
   announcements Announcement[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Wishlist  Wishlist[]
 }
 
 model Address {
@@ -277,6 +278,7 @@ model Product {
   tags              Tag[]
   ProductTags       ProductTag[]
   attributes        Attribute[]
+  wishlistProducts  Wishlist[]
   vendor            User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -420,13 +422,13 @@ model OrderItem {
 }
 
 model VendorOrder {
-  id       Int               @id @default(autoincrement())
-  orderNumber String @unique
-  orderId  Int // Reference to the main order
-  order    Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  vendorId Int // Reference to the vendor
-  vendor   User              @relation(fields: [vendorId], references: [id])
-  status   VendorOrderStatus @default(PENDING)
+  id          Int               @id @default(autoincrement())
+  orderNumber String            @unique
+  orderId     Int // Reference to the main order
+  order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorId    Int // Reference to the vendor
+  vendor      User              @relation(fields: [vendorId], references: [id])
+  status      VendorOrderStatus @default(PENDING)
 
   orderItems OrderItem[]
 
@@ -504,9 +506,21 @@ model Announcement {
   content   String
   createdBy Role     @default(ADMIN)
   vendorId  Int?
-  vendor    User?     @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendor    User?    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Wishlist {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  productId Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
 }
 
 model Country {
@@ -555,7 +569,7 @@ model BuyerTerm {
   updatedAt DateTime @updatedAt
 }
 
-model PrivayPolicy {
+model PrivacyPolicy {
   id        Int      @id @default(autoincrement())
   text      String   @default("") @db.Text
   createdAt DateTime @default(now())

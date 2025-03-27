@@ -20,8 +20,9 @@ const manageUsers = require('../routes/adminRoutes/userRoutes');
 const careerRoutes = require('../routes/adminRoutes/careerRoutes');
 const vendorCouponRoutes = require('../routes/vendorRoutes/couponRoutes');
 const dashboardRoutes = require('../routes/adminRoutes/dashboardRoutes');
-const vendorAnnouncementRoutes = require('../routes/vendorRoutes/announcementRoutes')
-const adminAnnouncementRoutes = require('../routes/adminRoutes/announcementRoutes')
+const vendorAnnouncementRoutes = require('../routes/vendorRoutes/announcementRoutes');
+const adminAnnouncementRoutes = require('../routes/adminRoutes/announcementRoutes');
+const userWishlistRoutes = require('../routes/buyerRoutes/wishlistRoutes');
 
 // variable initializations
 const router = express.Router();
@@ -32,6 +33,7 @@ router.use(homeRoutes);
 router.use(cartRoutes);
 router.use(orderRoutes);
 router.use(buyerProductRoutes);
+router.use(userWishlistRoutes);
 
 //ADMIN DASHBOARD ROUTES
 router.use(categoryRoutes);

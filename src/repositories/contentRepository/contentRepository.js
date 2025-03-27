@@ -49,11 +49,11 @@ exports.upsertBuyerTerms = async (data) => {
 };
 
 exports.getPrivacyPolicy = async () => {
-  return await prisma.privayPolicy.findMany();
+  return await prisma.privacyPolicy.findMany();
 };
 
 exports.upsertPrivacyPolicy = async (data) => {
-  return prisma.privayPolicy.upsert({
+  return prisma.privacyPolicy.upsert({
     where: {
       id: 1,
     },
