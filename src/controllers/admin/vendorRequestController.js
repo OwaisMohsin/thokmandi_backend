@@ -3,7 +3,9 @@ const vendorService = require("../../services/vendorService/vendorService");
 const userService = require("../../services/userService/userService");
 
 exports.getVendorRequests = asyncHandler(async (req, res) => {
-  const requests = await vendorService.vendorRequests();
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+  const requests = await vendorService.vendorRequests(page, limit);
 
   if (requests && requests.length > 0) {
     return res.status(200).json({
@@ -15,6 +17,32 @@ exports.getVendorRequests = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json({ status: true, message: "No Data Found", data: { requests: [] } });
+});
+
+exports.getVendorRequestByVendorEmail = asyncHandler(async (req, res) => {
+  const data = req.body;
+  const vendorRequest = await vendorService.searchVendorRequestByEmail(data.keyword);
+  if (vendorRequest && vendorRequest.length > 0) {
+    return res.status(200).json({
+      status: true,
+      message: "Vendor Request fetch successfully",
+      data: { vendorRequest },
+    });
+  }
+  return res.status(200).json({
+    status: true,
+    message: "No vendor request found",
+    data: { vendorRequest: [] },
+  });
+});
+
+exports.getVendorRequestsCount = asyncHandler(async (req, res) => {
+  const count = await vendorService.fetchRequestsCount();
+  return res.status(200).json({
+    status: true,
+    message: "Total count fetched successfully",
+    data: { count },
+  });
 });
 
 exports.updateRequestStatus = asyncHandler(async (req, res) => {
@@ -35,7 +63,7 @@ exports.deleteRequest = asyncHandler(async (req, res) => {
   await vendorService.deleteStoreRequest(storeId);
   return res
     .status(200)
-    .json({ status: true, message: "Reqeust deleted successfully" });
+    .json({ status: true, message: "Request deleted successfully" });
 });
 
 exports.updateApprovalStatus = asyncHandler(async (req, res) => {

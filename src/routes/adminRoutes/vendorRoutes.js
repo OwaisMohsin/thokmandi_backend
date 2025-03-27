@@ -1,7 +1,7 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {getVendorRequests, updateRequestStatus, deleteRequest,updateApprovalStatus } = require('../../controllers/admin/vendorRequestController');
+const {getVendorRequests, updateRequestStatus,getVendorRequestByVendorEmail,getVendorRequestsCount, deleteRequest,updateApprovalStatus } = require('../../controllers/admin/vendorRequestController');
 
 
 
@@ -16,6 +16,15 @@ router
 router
     .route('/vendor/vendor-requests')
     .get(checkRequest,getVendorRequests);
+
+router
+    .route('/vendor/vendor-request/search')
+    .post(checkRequest,getVendorRequestByVendorEmail);    
+
+ 
+router
+    .route('/vendor/vendor-requests/count')
+    .get(checkRequest,getVendorRequestsCount);    
 
 
 router

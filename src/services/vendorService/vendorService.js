@@ -72,9 +72,10 @@ exports.registerVendor = async (data, req) => {
   }
 };
 
-exports.vendorRequests = async () => {
+exports.vendorRequests = async (page, limit) => {
   try {
-    return await vendorRepository.getAllVendorRequests();
+    const skip = (page - 1) * limit;
+    return await vendorRepository.getAllVendorRequests(skip, limit);
   } catch (error) {
     throw error;
   }
@@ -107,6 +108,22 @@ exports.fetchVendorById = async (vendorId) => {
       throw new AppError("No vendor found with provided ID", 404);
     }
     return vendor;
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.fetchRequestsCount = async () => {
+  try {
+    return await vendorRepository.getAllVendorRequestsCount();
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.searchVendorRequestByEmail = async (keyword) => {
+  try {
+    return await vendorRepository.fetchVendorRequestByEmail(keyword);
   } catch (error) {
     throw error;
   }

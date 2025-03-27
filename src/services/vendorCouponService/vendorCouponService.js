@@ -22,7 +22,7 @@ exports.createNewCoupon = async (vendor, data) => {
 
 exports.getCoupons = async (vendorId) => {
   try {
-    const vendor = await userRepository.getVendorbyId(vendorId);
+    const vendor = await userRepository.getVendorById(vendorId);
     if (!vendor) {
       throw new AppError("No vendor exist with provided ID", 404);
     }
@@ -36,7 +36,7 @@ exports.updateSingleCoupon = async (vendorId, couponId, data) => {
   try {
     const coupon = await vendorCouponRepository.getCouponById(couponId);
     if (!coupon) {
-      throw new AppError("No coupon exist with provded ID", 404);
+      throw new AppError("No coupon exist with provided ID", 404);
     }
 
     const currentVendorHasCoupon =
@@ -45,7 +45,7 @@ exports.updateSingleCoupon = async (vendorId, couponId, data) => {
         couponId
       );
     if (!currentVendorHasCoupon) {
-      throw new AppError("You dont have permission to update this", 403);
+      throw new AppError("You don't have permission to update this", 403);
     }
 
     const couponData = {
@@ -63,7 +63,7 @@ exports.deleteSingleCoupon = async (vendorId, couponId) => {
   try {
     const coupon = await vendorCouponRepository.getCouponById(couponId);
     if (!coupon) {
-      throw new AppError("No coupon exist with provded ID", 404);
+      throw new AppError("No coupon exist with provided ID", 404);
     }
 
     const currentVendorHasCoupon =
@@ -72,7 +72,7 @@ exports.deleteSingleCoupon = async (vendorId, couponId) => {
         couponId
       );
     if (!currentVendorHasCoupon) {
-      throw new AppError("You dont have permission to delete this", 403);
+      throw new AppError("You don't have permission to delete this", 403);
     }
     return await vendorCouponRepository.deleteCouponById(couponId);
   } catch (error) {

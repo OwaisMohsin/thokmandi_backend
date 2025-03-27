@@ -78,7 +78,7 @@ exports.getUserByRole = async (role) => {
   });
 };
 
-exports.getVendorbyId = async (id) => {
+exports.getVendorById = async (id) => {
   return await prisma.user.findFirst({
     where: {
       id: Number(id),

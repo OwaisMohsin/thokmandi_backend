@@ -1,3 +1,4 @@
+const { Role } = require("@prisma/client");
 const prisma = require("../../config/db");
 
 exports.createStore = async (data) => {
@@ -6,17 +7,33 @@ exports.createStore = async (data) => {
   });
 };
 
-
 exports.findVendorById = async (id) => {
   return prisma.user.findUnique({
-    where:{
-      id:Number(id)
+    where: {
+      id: Number(id),
     },
-    include:{
-      store:true
-    }
-  })
-}
+    include: {
+      store: true,
+    },
+  });
+};
+
+exports.fetchVendorRequestByEmail = async (keyword) => {
+  return await prisma.store.findMany({
+    where: {
+      user: {
+        email: {
+          contains: keyword,
+          mode: "insensitive",
+        },
+        role: Role.VENDOR,
+      },
+    },
+    include: {
+      user: true,
+    },
+  });
+};
 
 exports.getStoreById = async (id) => {
   return await prisma.store.findUnique({
@@ -32,7 +49,7 @@ exports.addAddress = async (data) => {
   });
 };
 
-exports.getAllVendorRequests = async () => {
+exports.getAllVendorRequests = async (skip, limit) => {
   return await prisma.store.findMany({
     // where: {
     //   storeStatus: "pending",
@@ -43,6 +60,17 @@ exports.getAllVendorRequests = async () => {
           address: true,
         },
       },
+    },
+    skip,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+exports.getAllVendorRequestsCount = async () => {
+  return await prisma.store.count({
+    where: {
+      storeStatus: "pending",
     },
   });
 };

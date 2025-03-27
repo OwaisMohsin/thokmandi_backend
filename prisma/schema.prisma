@@ -132,7 +132,7 @@ model User {
   verificationToken  String?
   isVerified         Boolean @default(false)
   isActive           Boolean @default(true)
-  isApprovalRequired Boolean @default(false)
+  isApprovalRequired Boolean @default(true)
   userName           String?
   companyName        String?
   shopType           String?
