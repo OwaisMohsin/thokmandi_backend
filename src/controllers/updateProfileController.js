@@ -26,7 +26,7 @@ exports.addAddress = asyncHandler(async (req, res) => {
 
   return res.status(201).json({
     status: true,
-    message: "Address created succesffuly!",
+    message: "Address created succesffully!",
     data: { address },
   });
 });
