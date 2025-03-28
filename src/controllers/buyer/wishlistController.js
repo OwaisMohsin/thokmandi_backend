@@ -32,8 +32,16 @@ exports.getUserWishlist = asyncHandler(async (req, res) => {
 exports.deleteWishlistItem = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const itemId = req.params.itemId;
-  await wishlistService.deleteItem(userId,itemId);
+  await wishlistService.deleteItem(userId, itemId);
   return res
     .status(200)
     .json({ status: true, message: "Wishlist item deleted successfully" });
+});
+
+exports.deleteAllWishlistItems = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  await wishlistService.removeAllItems(userId);
+  return res
+    .status(200)
+    .json({ status: true, message: "All items deleted successfully" });
 });

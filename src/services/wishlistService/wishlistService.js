@@ -32,13 +32,21 @@ exports.getItems = async (userId) => {
   }
 };
 
-exports.deleteItem = async (userId,id) => {
+exports.deleteItem = async (userId, id) => {
   try {
-    const item = wishlistRepository.getWishlistItemById(userId,id);
+    const item = wishlistRepository.getWishlistItemById(userId, id);
     if (!item) {
       throw new AppError("No wishlist item found with provided ID", 404);
     }
     return await wishlistRepository.deleteItemById(id);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.removeAllItems = async (userId) => {
+  try {
+    return await wishlistRepository.deleteAllWishlistItems(userId);
   } catch (error) {
     throw error;
   }

@@ -53,3 +53,11 @@ exports.deleteItemById = async (id) => {
     },
   });
 };
+
+exports.deleteAllWishlistItems = async (userId) => {
+  return await prisma.wishlist.deleteMany({
+    where: {
+      userId: Number(userId),
+    },
+  });
+};
