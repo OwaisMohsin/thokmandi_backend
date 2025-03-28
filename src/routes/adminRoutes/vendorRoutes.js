@@ -1,7 +1,16 @@
 // module imports
 const express = require('express');
 const {checkRequest} = require('../../middlewares/requestFilter');
-const {getVendorRequests, updateRequestStatus,getVendorRequestByVendorEmail,getVendorRequestsCount, deleteRequest,updateApprovalStatus } = require('../../controllers/admin/vendorRequestController');
+const {getVendorRequests, 
+       updateRequestStatus,
+       getVendorsCount,
+       getVendorRequestByVendorEmail,
+       searchVendorByEmail,
+       getVendorRequestsCount,
+       getAllVendors, 
+       deleteRequest,
+       updateApprovalStatus,
+       deleteVendor } = require('../../controllers/admin/vendorController');
 
 
 
@@ -11,6 +20,22 @@ const router = express.Router();
 router
     .route('/vendor/request/approval')
     .put(checkRequest,updateApprovalStatus)
+
+router
+    .route('/vendor')
+    .get(checkRequest, getAllVendors); 
+    
+router
+    .route('/vendor/count')
+    .get(checkRequest,getVendorsCount); 
+
+router
+    .route('/vendor/search')
+    .post(checkRequest,searchVendorByEmail);    
+    
+router
+    .route('/vendor/:vendorId')
+    .delete(checkRequest,deleteVendor);    
 
 
 router

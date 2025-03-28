@@ -18,6 +18,33 @@ exports.findVendorById = async (id) => {
   });
 };
 
+exports.fetchVendorByEmail = async (keyword) => {
+  return await prisma.user.findMany({
+    where: {
+      AND: [
+        { email: { contains: keyword, mode: "insensitive" } },
+        { role: Role.VENDOR },
+      ],
+    },
+    include: {
+      store: true,
+    },
+  });
+};
+
+exports.getAllVendors = async (skip, limit) => {
+  return await prisma.user.findMany({
+    where: {
+      role: Role.VENDOR,
+    },
+    include: {
+      store: true,
+    },
+    skip,
+    take: limit,
+  });
+};
+
 exports.fetchVendorRequestByEmail = async (keyword) => {
   return await prisma.store.findMany({
     where: {
@@ -68,9 +95,13 @@ exports.getAllVendorRequests = async (skip, limit) => {
 };
 
 exports.getAllVendorRequestsCount = async () => {
-  return await prisma.store.count({
+  return await prisma.store.count();
+};
+
+exports.getAllVendorsCount = async () => {
+  return await prisma.user.count({
     where: {
-      storeStatus: "pending",
+      role: Role.VENDOR,
     },
   });
 };
@@ -81,6 +112,14 @@ exports.updateStoreStatus = async (id, data) => {
       id: Number(id),
     },
     data,
+  });
+};
+
+exports.deleteVendorById = async (id) => {
+  return await prisma.user.delete({
+    where: {
+      id: Number(id),
+    },
   });
 };
 

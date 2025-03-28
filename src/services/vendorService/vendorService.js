@@ -81,6 +81,15 @@ exports.vendorRequests = async (page, limit) => {
   }
 };
 
+exports.fetchAllVendors = async (page, limit) => {
+  try {
+    const skip = (page - 1) * limit;
+    return await vendorRepository.getAllVendors(skip, limit);
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.changeRequestStatus = async (id, data) => {
   try {
     const store = await vendorRepository.getStoreById(id);
@@ -113,6 +122,14 @@ exports.fetchVendorById = async (vendorId) => {
   }
 };
 
+exports.getVendorByEmail = async (keyword) => {
+  try {
+    return await vendorRepository.fetchVendorByEmail(keyword);
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.fetchRequestsCount = async () => {
   try {
     return await vendorRepository.getAllVendorRequestsCount();
@@ -121,9 +138,30 @@ exports.fetchRequestsCount = async () => {
   }
 };
 
+exports.fetchVendorsCount = async () => {
+  try {
+    return await vendorRepository.getAllVendorsCount();
+  } catch (error) {
+    throw error;
+  }
+};
+
 exports.searchVendorRequestByEmail = async (keyword) => {
   try {
+
     return await vendorRepository.fetchVendorRequestByEmail(keyword);
+  } catch (error) {
+    throw error;
+  }
+};
+
+exports.deleteVendor = async (id) => {
+  try {
+    const vendor = userRepository.findUserById(id);
+    if (!vendor) {
+      throw new AppError("No vendor found with provided ID", 404);
+    }
+    return await vendorRepository.deleteVendorById(id);
   } catch (error) {
     throw error;
   }
