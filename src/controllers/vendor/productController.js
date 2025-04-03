@@ -42,7 +42,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
   const product = await productService.createNewProduct(vendorId,req.body);
   return res.status(201).json({
     status: true,
-    message: "Prouct created successfully",
+    message: "Product created successfully",
     data: { product },
   });
 });
@@ -50,7 +50,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
 exports.getVendorProducts = asyncHandler(async(req,res) => {
   const vendorId = req.user.id;
-  const products = await productService.getProdoucts(vendorId);
+  const products = await productService.getProducts(vendorId);
   if(products && products.length > 0){
     return res.status(200).json({
       status: true,

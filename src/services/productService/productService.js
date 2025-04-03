@@ -385,7 +385,7 @@ exports.findProductTags = async (data) => {
   }
 }
 
-exports.getProdoucts = async (id) => {
+exports.getProducts = async (id) => {
   try {
     return await productRepository.getProductsByVendor(id);
   } catch (error) {

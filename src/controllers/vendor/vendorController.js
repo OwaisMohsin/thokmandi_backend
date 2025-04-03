@@ -11,7 +11,7 @@ exports.vendorRegistration = asyncHandler(async (req, res) => {
 });
 
 exports.getVendorById = asyncHandler(async (req, res) => {
-  const vendorId = req.body.vendorId;
+  const vendorId = req.params.vendorId;
   const vendor = await vendorService.fetchVendorById(vendorId);
   return res
     .status(200)
