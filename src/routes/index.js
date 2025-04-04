@@ -5,6 +5,7 @@ const express = require('express');
 const authRoutes = require('../routes/authRoutes');
 const profileRoutes = require('../routes/profileRoutes');
 const adminRoutes = require('../routes/adminRoutes/subAdminRoutes');
+const vendorAnnouncementRoutes = require('../routes/vendorRoutes/announcementRoutes');
 const vendorRoutes = require('../routes/vendorRoutes/vendorRoutes');
 const categoryRoutes = require('../routes/adminRoutes/categoryRoutes');
 const productRoutes = require('../routes/vendorRoutes/productRoutes');
@@ -20,7 +21,6 @@ const manageUsers = require('../routes/adminRoutes/userRoutes');
 const careerRoutes = require('../routes/adminRoutes/careerRoutes');
 const vendorCouponRoutes = require('../routes/vendorRoutes/couponRoutes');
 const dashboardRoutes = require('../routes/adminRoutes/dashboardRoutes');
-const vendorAnnouncementRoutes = require('../routes/vendorRoutes/announcementRoutes');
 const adminAnnouncementRoutes = require('../routes/adminRoutes/announcementRoutes');
 const userWishlistRoutes = require('../routes/buyerRoutes/wishlistRoutes');
 
@@ -50,9 +50,9 @@ router.use(adminAnnouncementRoutes);
 
 //VENDOR ROUTES
 router.use(vendorSideOrders);
+router.use(vendorAnnouncementRoutes);
 router.use(vendorRoutes);
 router.use(vendorCouponRoutes);
-router.use(vendorAnnouncementRoutes);
 
 //GENERIC ROUTES
 router.use(authRoutes);

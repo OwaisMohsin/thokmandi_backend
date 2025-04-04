@@ -112,6 +112,7 @@ exports.changeRequestStatus = async (id, data) => {
 
 exports.fetchVendorById = async (vendorId) => {
   try {
+    
     const vendor = await vendorRepository.findVendorById(vendorId);
     if (!vendor) {
       throw new AppError("No vendor found with provided ID", 404);
