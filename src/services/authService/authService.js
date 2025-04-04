@@ -8,7 +8,17 @@ const crypto = require("crypto");
 
 exports.registerUser = async (data, req) => {
   try {
-    const { firstName, lastName, email, password, phoneNumber } = data;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      brandType,
+      companyName,
+      openingDate,
+      shopType,
+    } = data;
     const userFound = await userRepository.findUserByEmail(email);
     if (userFound) {
       throw new AppError("Email already in use", 409);
@@ -21,6 +31,10 @@ exports.registerUser = async (data, req) => {
       email,
       phoneNumber,
       password: hashedPassword,
+      brandType,
+      companyName,
+      openingDate,
+      shopType,
     };
 
     const user = await userRepository.createUser(userData);
@@ -52,7 +66,7 @@ exports.registerUser = async (data, req) => {
 
     const token = createToken(user.id);
 
-    return {...user,token};
+    return { ...user, token };
   } catch (error) {
     console.log(error);
     throw error;
