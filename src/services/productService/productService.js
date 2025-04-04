@@ -14,7 +14,6 @@ const {
 
 exports.fetchAllProducts = async (pageNumber) => {
   try {
-    console.log("service.......");
     
     const page = pageNumber || 1;
     const limit = 12;
@@ -23,7 +22,6 @@ exports.fetchAllProducts = async (pageNumber) => {
       page,
       limit
     );
-    console.log("Products", products);
     
     return { totalCount, products };
   } catch (error) {

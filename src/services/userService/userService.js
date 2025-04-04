@@ -14,7 +14,6 @@ exports.getUserProfile = async (userId) => {
 
 exports.updateUserProfile = async (id, data) => {
   try {
-    console.log("Data is", data);
     
     const user = await userRepository.findUserById(id);
     if (!user) {
