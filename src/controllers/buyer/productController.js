@@ -3,12 +3,14 @@ const productService = require("../../services/productService/productService");
 
 exports.getAllProducts = asyncHandler(async (req, res) => {
   const pageNumber = req.query.page;
-  const { products, totalCount } = await productService.getProducts(pageNumber);
+  console.log(pageNumber);
+  
+  const { products, totalCount } = await productService.fetchAllProducts(pageNumber);
 
   if (products && products.length > 0) {
     return res.status(200).json({
       status: true,
-      message: "Proucts fetched successfully",
+      message: "Products fetched successfully",
       data: { products, totalCount },
     });
   }
@@ -26,7 +28,7 @@ exports.getProductsByCategory = asyncHandler(async (req, res) => {
   if (products && products.length > 0) {
     return res.status(200).json({
       status: true,
-      message: "Proucts fetched successfully",
+      message: "Products fetched successfully",
       data: { products, totalCount },
     });
   }

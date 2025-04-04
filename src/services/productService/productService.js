@@ -12,15 +12,19 @@ const {
   ShippingClass,
 } = require("@prisma/client");
 
-exports.getProducts = async (pageNumber) => {
+exports.fetchAllProducts = async (pageNumber) => {
   try {
+    console.log("service.......");
+    
     const page = pageNumber || 1;
     const limit = 12;
-
+    console.log(`Service - Page: ${page}, Limit: ${limit}`);
     const { products, totalCount } = await productRepository.getAllProducts(
       page,
       limit
     );
+    console.log("Products", products);
+    
     return { totalCount, products };
   } catch (error) {
     throw error;
