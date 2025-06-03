@@ -25,21 +25,21 @@ exports.addItemToCart = async (userId, item) => {
     const productAlreadyInCart =
       await cartRepository.getCartItemByUserAndProduct(cart.id, item.productId);
 
-    if (product.limitOnePerOrder) {
-      if (item.quantity > 1) {
-        throw new AppError(
-          "This product is limited to one per order by the vendor",
-          400
-        );
-      }
+    // if (product.limitOnePerOrder) {
+    //   if (item.quantity > 1) {
+    //     throw new AppError(
+    //       "This product is limited to one per order by the vendor",
+    //       400
+    //     );
+    //   }
 
-      if (productAlreadyInCart) {
-        throw new AppError(
-          "This product is already in your cart and is limited to one per order",
-          400
-        );
-      }
-    }
+    //   if (productAlreadyInCart) {
+    //     throw new AppError(
+    //       "This product is already in your cart and is limited to one per order",
+    //       400
+    //     );
+    //   }
+    // }
 
     if (productAlreadyInCart) {
       return await cartRepository.updateCartItem(

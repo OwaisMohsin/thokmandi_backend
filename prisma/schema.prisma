@@ -147,11 +147,13 @@ model User {
   userCoupons   User_Coupon[]
   vendorCoupons VendorCoupon[]
   // products      Product[]
+  productReview ProductReview[]
   announcements Announcement[]
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   Wishlist  Wishlist[]
+
 }
 
 model Address {
@@ -205,28 +207,28 @@ model Category {
   parent            Category?         @relation("CategoryToSubcategories", fields: [parentId], references: [id], onDelete: Cascade)
   subcategories     Category[]        @relation("CategoryToSubcategories")
   // products          Product[] // One-to-many relationship (if you want to keep a primary category)
-  // productCategories ProductCategory[] // Many-to-many relationship through join table
+  productCategories ProductCategory[] // Many-to-many relationship through join table
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Product {
-  id                 Int           @id @default(autoincrement())
-  title              String
+  id               Int       @id @default(autoincrement())
+  title            String
   // productType        ProductType
   // isDownloadable     Boolean?      @default(false)
   // isVirtual          Boolean?      @default(false)
   // productUrl         String?
   // buttonText         String?
-  price              Decimal       @default(0.0) @db.Decimal(10, 2)
-  discountedPrice    Decimal?      @default(0.0) @db.Decimal(10, 2)
-  from               DateTime?
-  to                 DateTime?
-  shortDescription   String?
-  image              String?
-  description        String
-  sku                String
+  price            Decimal   @default(0.0) @db.Decimal(10, 2)
+  discountedPrice  Decimal?  @default(0.0) @db.Decimal(10, 2)
+  from             DateTime?
+  to               DateTime?
+  shortDescription String?
+  image            String?
+  description      String
+  sku              String
   // stockStatus        StockStatus?  @default(IN_STOCK)
   // stockManagement    Boolean       @default(false)
   // stockQuantity      Int?
@@ -251,7 +253,7 @@ model Product {
   // productStatus      ProductStatus @default(ONLINE)
   // visibility         Visibility    @default(VISIBLE)
   // purchaseNote       String?       @db.Text
-  enableReviews      Boolean       @default(true)
+  enableReviews    Boolean   @default(true)
 
   // Upsells relationship (products that this product upsells to)
   // upsellTo ProductUpsell[] @relation("UpsellTo")
@@ -272,31 +274,44 @@ model Product {
   // includedInGroups ProductGroupItem[] @relation("ChildGroupProduct")
 
   // vendorId          Int
-  // productCategories ProductCategory[] // Many-to-many relationship through join table
+  productCategories ProductCategory[] // Many-to-many relationship through join table
   cartItem          CartItem[]
   orderItem         OrderItem[]
   // tags              Tag[]
   // ProductTags       ProductTag[]
   // attributes        Attribute[]
+  productReviews ProductReview[]
   wishlistProducts  Wishlist[]
   // vendor            User              @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
-// model ProductCategory {
-//   id         Int      @id @default(autoincrement())
-//   productId  Int
-//   categoryId Int
-//   product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-//   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+model ProductReview {
+  id        Int      @id @default(autoincrement())
+  review String
+  authorId  Int
+  productId Int
+  author    User @relation(fields: [authorId], references: [id], onDelete: Cascade) 
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model ProductCategory {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  categoryId Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-//   @@unique([productId, categoryId])
-// }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, categoryId])
+}
 
 // model ProductTag {
 //   id        Int     @id @default(autoincrement())
@@ -520,7 +535,6 @@ model Wishlist {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
 
 model Country {

@@ -4,19 +4,11 @@ const cartService = require("../../services/cartService/cartService");
 exports.getUserCart = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const cart = await cartService.fetchUserCart(userId);
-
-  if (cart) {
-    return res.status(200).json({
+  return res.status(200).json({
       status: true,
       message: "User cart fetched successfully",
-      data: { cart },
-    });
-  }
-  return res.status(200).json({
-    status: true,
-    message: "User cart fetched successfully",
-    data: [],
-  });
+      data: cart ? {cart} : {},
+  })
 });
 
 exports.addProductToCart = asyncHandler(async (req, res) => {

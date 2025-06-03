@@ -40,6 +40,7 @@ exports.getProductsByCategory = asyncHandler(async (req, res) => {
 });
 
 exports.getSingleProduct = asyncHandler(async (req, res) => {
+  
   const productId = req.params.productId;
   const product = await productService.getProductById(productId);
   return res.status(200).json({
@@ -48,3 +49,19 @@ exports.getSingleProduct = asyncHandler(async (req, res) => {
     data: { product },
   });
 });
+
+exports.addProductReview = asyncHandler(async (req,res) => {
+  console.log("logging... ",req.user.id, req.body);
+  const userId = req.user.id;
+  
+  if(!userId){
+    return res.status(400).json({status:false,message:"Token missing from header"})
+  }
+  const review = await productService.createProductReview(userId,req.body);
+  return res.status(201).json({
+    status: true,
+    message: "Review created successfully",
+    data: { review },
+  });
+
+})

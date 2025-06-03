@@ -74,6 +74,7 @@ exports.registerUser = async (data, req) => {
 };
 
 exports.loginUser = async (data) => {
+  
   try {
     const { email, password } = data;
 

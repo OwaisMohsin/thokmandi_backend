@@ -24,30 +24,53 @@ exports.findProductById = async (id) => {
       id: Number(id),
     },
     include: {
-      attributes: {
-        include: {
-          values: true,
-        },
-      },
-      ProductTags: {
-        include: {
-          tag: true,
-        },
-      },
+      // attributes: {
+      //   include: {
+      //     values: true,
+      //   },
+      // },
+      // ProductTags: {
+      //   include: {
+      //     tag: true,
+      //   },
+      // },
       productCategories: {
-        include: {
-          category: true,
-        },
-      },
-      vendor: {
         select: {
-          store: {
+          category: {
             select: {
-              shopName: true,
+              name: true,
+              categoryType: true,
+              isActive: true,
             },
           },
         },
       },
+      productReviews: {
+        select:{
+          review:true,
+          author:{
+            select:{
+              firstName:true,
+              lastName:true
+            }
+          },
+          product:{
+            select:{
+              title:true,
+              image:true
+            }
+          }
+        }
+      },
+      // vendor: {
+      //   select: {
+      //     store: {
+      //       select: {
+      //         shopName: true,
+      //       },
+      //     },
+      //   },
+      // },
     },
   });
 };
@@ -116,6 +139,10 @@ exports.getProductsByVendor = async (id) => {
       vendorId: Number(id),
     },
   });
+};
+
+exports.addProductReview = async (data) => {
+  return await prisma.productReview.create({ data });
 };
 
 exports.createProduct = async (data) => {
