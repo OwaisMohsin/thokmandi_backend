@@ -47,7 +47,7 @@ exports.registerUser = async (data, req) => {
 
     // const baseUrl = `${req.protocol}://${req.get("host")}`;
     // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}`;
-    const verificationUrl = `http://192.168.18.5:3000//verify-account/${verificationToken.plainToken}`;
+    const verificationUrl = `http://192.168.18.6:3000/verify-account/${verificationToken.plainToken}`;
 
     const subject = "Account Verification";
     const message = `
@@ -148,11 +148,11 @@ exports.resendLink = async (data, requestType) => {
     await userRepository.updateUserById(user.id, {
       verificationToken: verificationToken.hashedToken,
     });
-    let verificationUrl = `http://192.168.18.5:3000//verify-account/${verificationToken.plainToken}`;
+    let verificationUrl = `http://192.168.18.6:3000/verify-account/${verificationToken.plainToken}`;
     let subject = "";
     let message = "";
     if (requestType === "forgot-password") {
-      verificationUrl = `http://192.168.18.5:3000//verify-account/${verificationToken.plainToken}?type=forgot-password`;
+      verificationUrl = `http://192.168.18.6:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
       subject = "Password Reset";
       message = `
       <p>Welcome!</p>
@@ -163,7 +163,7 @@ exports.resendLink = async (data, requestType) => {
     
       `;
     } else {
-      verificationUrl = `http://192.168.18.5:3000/verify-account/${verificationToken.plainToken}`;
+      verificationUrl = `http://192.168.18.6:3000/verify-account/${verificationToken.plainToken}`;
 
       subject = "Account Verification";
       message = `
@@ -202,7 +202,7 @@ exports.userForgotPassword = async (data, req) => {
     // const baseUrl = `${req.protocol}://${req.get("host")}`;
     // const verificationUrl = `${baseUrl}/api/v1/auth/verify/${verificationToken.plainToken}?type=forgot-password`;
 
-    const verificationUrl = `http://192.168.18.5:3000//verify-account/${verificationToken.plainToken}?type=forgot-password`;
+    const verificationUrl = `http://192.168.18.6:3000/verify-account/${verificationToken.plainToken}?type=forgot-password`;
 
     const subject = "Password Reset";
     const message = `
