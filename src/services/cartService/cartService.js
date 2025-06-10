@@ -68,9 +68,9 @@ exports.updateItemQuantity = async (productId, newQuantity) => {
       throw new AppError("No Cart item found with provided ID", 404);
     }
 
-    const product = await productRepository.checkPurchaseLimit(
-      cartItem.productId
-    );
+    // const product = await productRepository.checkPurchaseLimit(
+    //   cartItem.productId
+    // );
 
     // if (product.limitOnePerOrder) {
     //   throw new AppError(
