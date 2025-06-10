@@ -72,12 +72,12 @@ exports.updateItemQuantity = async (productId, newQuantity) => {
       cartItem.productId
     );
 
-    if (product.limitOnePerOrder) {
-      throw new AppError(
-        "This product is limited to one per order. You cannot add more than one unit.",
-        400
-      );
-    }
+    // if (product.limitOnePerOrder) {
+    //   throw new AppError(
+    //     "This product is limited to one per order. You cannot add more than one unit.",
+    //     400
+    //   );
+    // }
     return await cartRepository.updateItemQuantityById(productId, newQuantity);
   } catch (error) {
     throw error;
